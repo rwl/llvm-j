@@ -1,6 +1,7 @@
 package main;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -61,14 +62,14 @@ public class Main {
 				if (sym.getName().startsWith("LLVM")) {
 					//echo(sym.getName());
 				}
-			}			
+			}
 		}
 		{
 			Symbol[] clangsym = getClangSymbols();
 			echo(" clang lib has " + clangsym.length + " symbols.");
 			for (Symbol sym: getClangSymbols()) {
 				//echo(sym.getName());
-			}			
+			}
 		}
 
 		//checkLLVM();
@@ -76,7 +77,7 @@ public class Main {
 		checkClang();
 	}
 
-	public static Symbol[] getLLVMSymbols() {		
+	public static Symbol[] getLLVMSymbols() {
 		try {
 			org.bridj.NativeLibrary lib = BridJ.getNativeLibrary("LLVM-3.0");
 			Collection<Symbol> symbols = lib.getSymbols();
@@ -89,16 +90,18 @@ public class Main {
 						return 1;
 					} else if (b == null) return -1;
 					return a.getName().compareTo(b.getName());
-				}				
+				}
 			});
 			return array;
-		} 
+		}
 		catch (FileNotFoundException e) {
 			e.printStackTrace();
-		}
+		} catch (IOException e) {
+            e.printStackTrace();
+        }
 		return null;
 	}
-	public static Symbol[] getClangSymbols() {		
+	public static Symbol[] getClangSymbols() {
 		try {
 			org.bridj.NativeLibrary lib = BridJ.getNativeLibrary("clang");
 			Collection<Symbol> symbols = lib.getSymbols();
@@ -111,28 +114,30 @@ public class Main {
 						return 1;
 					} else if (b == null) return -1;
 					return a.getName().compareTo(b.getName());
-				}				
+				}
 			});
 			return array;
-		} 
+		}
 		catch (FileNotFoundException e) {
 			e.printStackTrace();
-		}
+		} catch (IOException e) {
+            e.printStackTrace();
+        }
 		return null;
 	}
 
 	public static void checkLLVM() {
 		//LLVMLibrary.LLVMInitializeNativeTarget();
-		
+
 		Context ctx = Context.getGlobalContext();
 		echo("got global context "+ctx);
-		
+
 		Module module = Module.CreateWithNameInContext("test module", ctx);
 		echo("created module "+module);
-		
+
 		ExecutionEngine execengine = ExecutionEngine.createForModule(module);
 		echo("created execution engine "+execengine);
-		
+
 		//LLVMLibrary.LLVMPassManagerRef fpm = LLVMLibrary.LLVMCreateFunctionPassManagerForModule(module);
 		PassManager fpm = PassManager.createForModule(module);
 		echo("created FPM "+fpm);
@@ -143,17 +148,17 @@ public class Main {
 		fpm.AddReassociatePass();
 		fpm.AddGVNPass();
 		fpm.AddCFGSimplificationPass();
-		
+
 		fpm.Initialize();
 		echo("added some passes to FPM " + fpm);
-		
+
 		// sposed to initializeFPM after adding passes like in tut?
 		//
 		// looks like should be: fpm.create, init, run, finalize, dispose (cf. approp LLVMPassManagerRef-taking fns)
-		
+
 		//LLVMLibrary.LLVMPassRegistryRef passreg = LLVMLibrary.LLVMGetGlobalPassRegistry();
 		//LLVMLibrary.LLVMInitializeCore(passreg);
-				
+
 	}
 
 	public static void checkClang() {
@@ -161,8 +166,8 @@ public class Main {
 			System.out.println(Clang.getClangVersion());
 
 			String sourceFilename = "C:/LLVM/llvm-3.0/include/clang-c/Index.h"; // "test.c";
-			String args[] = {    
-					// "-Xclang", "-include-pch=Index.pch",		 
+			String args[] = {
+					// "-Xclang", "-include-pch=Index.pch",
 					"-Ic:/MinGW/include",
 					"-Ic:/MinGW/lib/gcc/mingw32/4.6.1/include",
 					"-Ic:/LLVM/llvm-3.0/include"
@@ -171,7 +176,7 @@ public class Main {
 			TranslationUnit tu = idx.parse(sourceFilename, args);
 			if (tu == null) throw new RuntimeException("fail: no TranslationUnit from 'Index.parse'");
 			echo(tu.name());
-			
+
 			Cursor cursor = tu.getCursor();
 
 			cursor.visitChildren(cursor.new Visitor() {
@@ -185,8 +190,8 @@ public class Main {
 			Cursor.Visitor visitor = cursor.new Visitor() {
 				@Override
 				public int apply(Cursor cursor, Cursor parent,
-						com.sun.jna.Pointer client_data) 
-				{					
+						com.sun.jna.Pointer client_data)
+				{
 					//int depth = cursor.lexicalDepth();
 					if (cursor.isDeclaration()) {
 						//echo("\n\n"+cursor + " - " + parent);
