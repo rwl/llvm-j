@@ -42,7 +42,8 @@ public class Main {
 	}
 
 	public interface ClangJNA extends Library {
-		ClangJNA INSTANCE = (ClangJNA) Native.loadLibrary("clang.dll", ClangJNA.class);
+		ClangJNA INSTANCE = (ClangJNA) Native.loadLibrary(
+				(Platform.isWindows() ? "clang.dll" : "clang"), ClangJNA.class);
 		// I think this is actually kind of wrong, taking advantage of the fact
 		// that the CXString that's returned has void* data as first element.
 		String clang_getClangVersion();
@@ -72,9 +73,9 @@ public class Main {
 			}
 		}
 
-		//checkLLVM();
+		checkLLVM();
 
-		checkClang();
+		//checkClang();
 	}
 
 	public static Symbol[] getLLVMSymbols() {
@@ -165,12 +166,12 @@ public class Main {
 		try {
 			System.out.println(Clang.getClangVersion());
 
-			String sourceFilename = "C:/LLVM/llvm-3.0/include/clang-c/Index.h"; // "test.c";
+			String sourceFilename = "/tmp/hello.c";//"/usr/include/clang-c/Index.h";//"C:/LLVM/llvm-3.0/include/clang-c/Index.h"; // "test.c";
 			String args[] = {
 					// "-Xclang", "-include-pch=Index.pch",
-					"-Ic:/MinGW/include",
-					"-Ic:/MinGW/lib/gcc/mingw32/4.6.1/include",
-					"-Ic:/LLVM/llvm-3.0/include"
+//					"-Ic:/MinGW/include",
+//					"-Ic:/MinGW/lib/gcc/mingw32/4.6.1/include",
+//					"-Ic:/LLVM/llvm-3.0/include"
 			};
 			Index idx = Index.create();
 			TranslationUnit tu = idx.parse(sourceFilename, args);

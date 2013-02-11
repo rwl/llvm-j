@@ -25,21 +25,21 @@ import com.sun.jna.Pointer;
 /**
  * testing... uses JTree to throw up a browser for a translation unit
  * parsed by clang
- * 
+ *
  * @author Kevin
  *
  */
 public class Browser implements TreeModel {
-	
+
 	public static void echo(String s) { System.out.println(s); }
 
 	static { System.setProperty("jna.library.path", "C:/LLVM/llvm-3.0/bin/"); }
-	
+
 	HashMap<Cursor, Cursor> c2p = new HashMap<Cursor, Cursor>();
 	HashMap<Cursor, ArrayList<Cursor>> p2c = new HashMap<Cursor, ArrayList<Cursor>>();
-	
+
 	void record(Cursor parent, Cursor child) {
-		if (parent == null || child == null) return;		
+		if (parent == null || child == null) return;
 		c2p.put(child, parent);
 		ArrayList<Cursor> children;
 		if (!p2c.containsKey(parent)) {
@@ -48,9 +48,9 @@ public class Browser implements TreeModel {
 		} else {
 			children = p2c.get(parent);
 		}
-		children.add(child);		
+		children.add(child);
 	}
-	
+
 	/**
 	 * record cursors in this translation unit, ignoring ones that
 	 * don't originate in this file.
@@ -63,7 +63,7 @@ public class Browser implements TreeModel {
 		Cursor cursor = tu.getCursor();
 		cursor.visitChildren(cursor.new Visitor() {
 			@Override
-			public int apply(Cursor child, Cursor parent, Pointer client_data) {				
+			public int apply(Cursor child, Cursor parent, Pointer client_data) {
 				String curFile = child.getLocation().file();
 				if (!file.equalsIgnoreCase(curFile)) {
 					return Continue;  // skip, not in same file
@@ -73,17 +73,17 @@ public class Browser implements TreeModel {
 			}
 		}, null);
 	}
-	
+
 	ArrayList<Cursor> children(Cursor c) { return p2c.get(c); }
-	
+
 	Cursor parent(Cursor c) { return c2p.get(c); }
-	
+
 
 	private JFrame frame;
 
     private Vector<TreeModelListener> treeModelListeners =
         new Vector<TreeModelListener>();
-    
+
     private TranslationUnit tu;
     private Index idx;
     private Cursor rootCursor;
@@ -95,13 +95,13 @@ public class Browser implements TreeModel {
 	 */
 	public static void main(String[] args) {
 		// should pass on args
-		final String filename = "C:/LLVM/llvm-3.0/include/clang-c/Index.h";
+		final String filename = "/usr/include/clang-c/Index.h";
 		final String[] clangargs = {
-				"-IC:/MinGW/include",
-				"-IC:/MinGW/lib/gcc/mingw32/4.6.1/include",
-				"-IC:/LLVM/llvm-3.0/include"
+//				"-IC:/MinGW/include",
+//				"-IC:/MinGW/lib/gcc/mingw32/4.6.1/include",
+//				"-IC:/LLVM/llvm-3.0/include"
 		};
-		
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -121,26 +121,26 @@ public class Browser implements TreeModel {
 		initTranslationUnit(filename, args);
 		initialize();
 	}
-	
+
 	/**
 	 * create a TranslationUnit by parsing a sourcefile;
 	 * also iterate its cursors to collect parent/child maps
-	 * 
+	 *
 	 * @param filename to parse
 	 * @param extraargs like extra include directories, whatever clang takes
 	 */
 	private void initTranslationUnit(String filename, String[] extraargs) {
-		
+
 		file = filename;
 		args = extraargs;
-		
+
 		idx = Index.create();
 		tu = idx.parse(file, args);
 		if (tu == null) throw new RuntimeException("fail: no TranslationUnit from 'Index.parse()'");
-		
+
 		rootCursor = tu.getCursor();
 		record(tu, file);
-		
+
 	}
 
 	/**
@@ -150,13 +150,13 @@ public class Browser implements TreeModel {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 580, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
-		
+
 		JMenu mnNewMenu = new JMenu("File");
 		menuBar.add(mnNewMenu);
-		
+
 		JMenuItem mntmOpen = new JMenuItem("Open");
 		mnNewMenu.add(mntmOpen);
 
@@ -164,14 +164,14 @@ public class Browser implements TreeModel {
 		frame.getContentPane().add(new JScrollPane(tree), BorderLayout.CENTER);
 		tree.setModel(this);
 	}
-	
+
 	protected void finalize() { dispose(); }
 	public void dispose() {
 		if (tu != null) { tu.dispose(); tu = null; }
-		if (idx != null) { idx.dispose(); idx = null; }		
-		rootCursor = null; 
+		if (idx != null) { idx.dispose(); idx = null; }
+		rootCursor = null;
 	}
-	
+
 	///////////////////////////////////////////////////////////////////////
 	// following is a simple TreeModel impl
 
@@ -242,6 +242,6 @@ public class Browser implements TreeModel {
     public void valueForPathChanged(TreePath path, Object newValue) {
         echo("*** valueForPathChanged : " + path + " --> " + newValue);
     }
-   
+
 
 }
