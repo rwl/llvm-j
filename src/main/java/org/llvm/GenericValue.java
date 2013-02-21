@@ -1,10 +1,10 @@
-package llvm;
+package org.llvm;
 
-import llvm.binding.LLVMLibrary;
 
 import org.bridj.Pointer;
+import org.llvm.binding.LLVMLibrary;
 
-import static llvm.binding.LLVMLibrary.*;
+import static org.llvm.binding.LLVMLibrary.*;
 
 public class GenericValue
 {

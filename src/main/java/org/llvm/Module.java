@@ -1,8 +1,8 @@
-package llvm;
+package org.llvm;
 
 import org.bridj.Pointer;
 
-import static llvm.binding.LLVMLibrary.*;
+import static org.llvm.binding.LLVMLibrary.*;
 
 
 public class Module {

@@ -22,11 +22,11 @@ help:
 	@echo "    llvm     to generate Java bindings to LLVM using JNAerator"
 
 clean:
-	-rm src/main/java/llvm/binding/LLVMLibrary.java
+	-rm src/main/java/org/llvm/binding/LLVMLibrary.java
 
-llvm: clean src/main/java/llvm/binding/LLVMLibrary.java
+llvm: clean src/main/java/org/llvm/binding/LLVMLibrary.java
 
-src/main/java/llvm/binding/LLVMLibrary.java: jnaerator.jar config.jnaerator
+src/main/java/org/llvm/binding/LLVMLibrary.java: jnaerator.jar config.jnaerator
 	$(JAVA) -jar $<
 	sed -i 's/@Library("LLVM")/@Library("LLVM-$(LLVM_VERSION)")/' $@
 

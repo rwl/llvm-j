@@ -7,17 +7,63 @@
 	<version>0.1.0-SNAPSHOT</version>
 	<name>LLVM-J</name>
 	<description>Java bindings for LLVM libraries</description>
-	<url>http://code.google.com/p/llvm-j</url>
-	<dependencies>
-		<dependency>
-			<groupId>com.nativelibs4java</groupId>
-			<artifactId>bridj</artifactId>
-			<version>0.6.2</version>
-		</dependency>
-		<dependency>
-			<groupId>net.java.dev.jna</groupId>
-			<artifactId>jna</artifactId>
-			<version>3.4.0</version>
-		</dependency>
-	</dependencies>
+	<url>http://github.com/llvmj/llvm-j</url>
+    <dependencies>
+        <dependency>
+            <groupId>com.nativelibs4java</groupId>
+            <artifactId>bridj</artifactId>
+            <version>0.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>3.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+	<licenses>
+		<license>
+			<name>MIT</name>
+			<url>http://opensource.org/licenses/mit-license.php</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<scm>
+		<url>git@github.com:llvmj/llvm-j.git</url>
+		<connection>scm:git:git@github.com:llvmj/llvm-j.git</connection>
+		<developerConnection>scm:git:git@github.com:llvmj/llvm-j.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
+	<developers>
+		<developer>
+			<id>kkelly</id>
+			<name>Kevin Kelley</name>
+			<email>KevinKelley64@gmail.com</email>
+		</developer>
+		<developer>
+			<id>rlincoln</id>
+			<name>Richard Lincoln</name>
+			<email>r.w.lincoln@gmail.com</email>
+		</developer>
+	</developers>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

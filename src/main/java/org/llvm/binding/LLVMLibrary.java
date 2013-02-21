@@ -1,4 +1,4 @@
-package llvm.binding;
+package org.llvm.binding;
 import java.util.Collections;
 import java.util.Iterator;
 import org.bridj.BridJ;

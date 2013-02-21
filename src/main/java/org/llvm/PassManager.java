@@ -1,6 +1,6 @@
-package llvm;
+package org.llvm;
 
-import static llvm.binding.LLVMLibrary.*;
+import static org.llvm.binding.LLVMLibrary.*;
 
 
 public class PassManager {
