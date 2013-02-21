@@ -1,5 +1,6 @@
 package llvm;
 
+import org.bridj.IntValuedEnum;
 import org.bridj.Pointer;
 import org.bridj.ValuedEnum;
 
@@ -10,12 +11,12 @@ public class Builder
 {
 	private LLVMBuilderRef builder;
 	/*package*/ LLVMBuilderRef builder() { return builder; }
-	
+
 	/*package*/ Builder(LLVMBuilderRef builder) { this.builder = builder; }
-	
+
 	public void finalize() { dispose(); }
 	public void dispose() { LLVMDisposeBuilder(builder); builder = null; }
-	
+
 	// creation
 	public static Builder CreateBuilderInContext(Context C) { return new Builder( LLVMCreateBuilderInContext(C.context())); }
 	public static Builder CreateBuilder() { return new Builder( LLVMCreateBuilder()); }
@@ -24,7 +25,7 @@ public class Builder
 	public void PositionBuilder(BasicBlock Block, Value Instr) { LLVMPositionBuilder(builder, Block.bb(), Instr.value()); }
 	public void PositionBuilderBefore(Value Instr) { LLVMPositionBuilderBefore(builder, Instr.value()); }
 	public void PositionBuilderAtEnd(BasicBlock Block) { LLVMPositionBuilderAtEnd(builder, Block.bb()); }
-	
+
 	public BasicBlock GetInsertBlock() { return new BasicBlock(LLVMGetInsertBlock(builder)); }
 	public void ClearInsertionPosition() { LLVMClearInsertionPosition(builder); }
 	public void InsertIntoBuilder(Value Instr) { LLVMInsertIntoBuilder(builder, Instr.value()); }
@@ -34,10 +35,10 @@ public class Builder
 	public Value GetCurrentDebugLocation() { return new Value(LLVMGetCurrentDebugLocation(builder)); }
 	public void SetInstDebugLocation(Value Inst) { LLVMSetInstDebugLocation(builder, Inst.value()); }
 
-	
-	// building 
+
+	// building
 	public Value BuildRetVoid() { return new Value(LLVMBuildRetVoid(builder)); }
-	
+
 	public Value BuildRet(Value V) { return new Value(LLVMBuildRet(builder, V.value())); }
 	public Value BuildAggregateRet(Pointer<LLVMValueRef> RetVals, int N) { return new Value(LLVMBuildAggregateRet(builder, RetVals, N)); }
 	public Value BuildBr(LLVMBasicBlockRef Dest) { return new Value(LLVMBuildBr(builder, Dest)); }
@@ -47,11 +48,11 @@ public class Builder
 	public Value BuildInvoke(Value Fn, Pointer<LLVMValueRef> Args, int NumArgs, LLVMBasicBlockRef Then, LLVMBasicBlockRef Catch, String Name) { return new Value(LLVMBuildInvoke(builder, Fn.value(), Args, NumArgs, Then, Catch, Pointer.pointerToCString(Name))); }
 //	public Value BuildUnwind() { return new Value(LLVMBuildUnwind(builder)); }
 	public Value BuildUnreachable() { return new Value(LLVMBuildUnreachable(builder)); }
-	
+
 	// TODO: put these where they belong; they probably don't belong here.
 	public void AddCase(Value Switch, Value OnVal, LLVMBasicBlockRef Dest) { LLVMAddCase(Switch.value(), OnVal.value(), Dest); }
 	public void AddDestination(Value IndirectBr, LLVMBasicBlockRef Dest) { LLVMAddDestination(IndirectBr.value(), Dest); }
-	
+
 	public Value BuildAdd(Value LHS, Value RHS, String Name) { return new Value(LLVMBuildAdd(builder, LHS.value(), RHS.value(), Pointer.pointerToCString(Name))); }
 	public Value BuildNSWAdd(Value LHS, Value RHS, String Name) { return new Value(LLVMBuildNSWAdd(builder, LHS.value(), RHS.value(), Pointer.pointerToCString(Name))); }
 	public Value BuildNUWAdd(Value LHS, Value RHS, String Name) { return new Value(LLVMBuildNUWAdd(builder, LHS.value(), RHS.value(), Pointer.pointerToCString(Name))); }
@@ -77,7 +78,7 @@ public class Builder
 	public Value BuildAnd(Value LHS, Value RHS, String Name) { return new Value(LLVMBuildAnd(builder, LHS.value(), RHS.value(), Pointer.pointerToCString(Name))); }
 	public Value BuildOr(Value LHS, Value RHS, String Name) { return new Value(LLVMBuildOr(builder, LHS.value(), RHS.value(), Pointer.pointerToCString(Name))); }
 	public Value BuildXor(Value LHS, Value RHS, String Name) { return new Value(LLVMBuildXor(builder, LHS.value(), RHS.value(), Pointer.pointerToCString(Name))); }
-	public Value BuildBinOp(ValuedEnum<LLVMOpcode > Op, Value LHS, Value RHS, String Name) { return new Value(LLVMBuildBinOp(builder, Op, LHS.value(), RHS.value(), Pointer.pointerToCString(Name))); }
+	public Value BuildBinOp(IntValuedEnum<LLVMOpcode > Op, Value LHS, Value RHS, String Name) { return new Value(LLVMBuildBinOp(builder, Op, LHS.value(), RHS.value(), Pointer.pointerToCString(Name))); }
 	public Value BuildNeg(Value V, String Name) { return new Value(LLVMBuildNeg(builder, V.value(), Pointer.pointerToCString(Name))); }
 	public Value BuildNSWNeg(Value V, String Name) { return new Value(LLVMBuildNSWNeg(builder, V.value(), Pointer.pointerToCString(Name))); }
 	public Value BuildNUWNeg(Value V, String Name) { return new Value(LLVMBuildNUWNeg(builder, V.value(), Pointer.pointerToCString(Name))); }
@@ -110,12 +111,12 @@ public class Builder
 	public Value BuildZExtOrBitCast(Value Val, LLVMTypeRef DestTy, String Name) { return new Value(LLVMBuildZExtOrBitCast(builder, Val.value(), DestTy, Pointer.pointerToCString(Name))); }
 	public Value BuildSExtOrBitCast(Value Val, LLVMTypeRef DestTy, String Name) { return new Value(LLVMBuildSExtOrBitCast(builder, Val.value(), DestTy, Pointer.pointerToCString(Name))); }
 	public Value BuildTruncOrBitCast(Value Val, LLVMTypeRef DestTy, String Name) { return new Value(LLVMBuildTruncOrBitCast(builder, Val.value(), DestTy, Pointer.pointerToCString(Name))); }
-	public Value BuildCast(ValuedEnum<LLVMOpcode > Op, Value Val, LLVMTypeRef DestTy, String Name) { return new Value(LLVMBuildCast(builder, Op, Val.value(), DestTy, Pointer.pointerToCString(Name))); }
+	public Value BuildCast(IntValuedEnum<LLVMOpcode > Op, Value Val, LLVMTypeRef DestTy, String Name) { return new Value(LLVMBuildCast(builder, Op, Val.value(), DestTy, Pointer.pointerToCString(Name))); }
 	public Value BuildPointerCast(Value Val, LLVMTypeRef DestTy, String Name) { return new Value(LLVMBuildPointerCast(builder, Val.value(), DestTy, Pointer.pointerToCString(Name))); }
 	public Value BuildIntCast(Value Val, LLVMTypeRef DestTy, String Name) { return new Value(LLVMBuildIntCast(builder, Val.value(), DestTy, Pointer.pointerToCString(Name))); }
 	public Value BuildFPCast(Value Val, LLVMTypeRef DestTy, String Name) { return new Value(LLVMBuildFPCast(builder, Val.value(), DestTy, Pointer.pointerToCString(Name))); }
-	public Value BuildICmp(ValuedEnum<LLVMIntPredicate > Op, Value LHS, Value RHS, String Name) { return new Value(LLVMBuildICmp(builder, Op, LHS.value(), RHS.value(), Pointer.pointerToCString(Name))); }
-	public Value BuildFCmp(ValuedEnum<LLVMRealPredicate > Op, Value LHS, Value RHS, String Name) { return new Value(LLVMBuildFCmp(builder, Op, LHS.value(), RHS.value(), Pointer.pointerToCString(Name))); }
+	public Value BuildICmp(IntValuedEnum<LLVMIntPredicate > Op, Value LHS, Value RHS, String Name) { return new Value(LLVMBuildICmp(builder, Op, LHS.value(), RHS.value(), Pointer.pointerToCString(Name))); }
+	public Value BuildFCmp(IntValuedEnum<LLVMRealPredicate > Op, Value LHS, Value RHS, String Name) { return new Value(LLVMBuildFCmp(builder, Op, LHS.value(), RHS.value(), Pointer.pointerToCString(Name))); }
 	public Value BuildPhi(LLVMTypeRef Ty, String Name) { return new Value(LLVMBuildPhi(builder, Ty, Pointer.pointerToCString(Name))); }
 	public Value BuildCall(Value Fn, Pointer<LLVMValueRef> Args, int NumArgs, String Name) { return new Value(LLVMBuildCall(builder, Fn.value(), Args, NumArgs, Pointer.pointerToCString(Name))); }
 	public Value BuildSelect(Value If, Value Then, Value Else, String Name) { return new Value(LLVMBuildSelect(builder, If.value(), Then.value(), Else.value(), Pointer.pointerToCString(Name))); }
