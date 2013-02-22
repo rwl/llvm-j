@@ -43,7 +43,7 @@ public class TestLLVM extends TestCase {
 		Context ctx = Context.getGlobalContext();
 		assertNotNull(ctx);
 
-		Module module = Module.CreateWithNameInContext("test_module", ctx);
+		Module module = Module.createWithNameInContext("test_module", ctx);
 		assertNotNull(module);
 
 		ExecutionEngine execEngine = ExecutionEngine.createForModule(module);
