@@ -14,15 +14,31 @@ public class PassManager {
         this.manager = manager;
     }
 
+    /**
+     * Constructs a new whole-module pass pipeline. This type of pipeline is<br>
+     * suitable for link-time optimization and whole-module transformations.<br>
+     * 
+     * @see llvm::PassManager::PassManager
+     */
     public static PassManager create() {
         return new PassManager(LLVMCreatePassManager());
     }
 
+    /**
+     * Constructs a new function-by-function pass pipeline over the module<br>
+     * provider. It does not take ownership of the module provider. This type of<br>
+     * pipeline is suitable for code generation and JIT compilation tasks.<br>
+     * 
+     * @see llvm::FunctionPassManager::FunctionPassManager
+     */
     public static PassManager createForModule(Module M) {
         return new PassManager(
                 LLVMCreateFunctionPassManagerForModule(M.module()));
     }
 
+    /**
+     * Deprecated: Use LLVMCreateFunctionPassManagerForModule instead.
+     */
     public static PassManager createFPM(LLVMModuleProviderRef MP) {
         return new PassManager(LLVMCreateFunctionPassManager(MP));
     }
@@ -31,6 +47,13 @@ public class PassManager {
         dispose();
     }
 
+    /**
+     * Finalizes all of the function passes scheduled in in the function pass<br>
+     * manager. Returns 1 if any of the passes modified the module, 0 otherwise.<br>
+     * Frees the memory of a pass pipeline. For function pipelines, does not
+     * free<br>
+     * the module provider.
+     */
     public void dispose() {
         boolean err = LLVMFinalizeFunctionPassManager(manager) != 0;
         LLVMDisposePassManager(manager);
@@ -44,6 +67,12 @@ public class PassManager {
     /* PassManager */
     // public static native int LLVMRunPassManager(LLVMPassManagerRef PM, LLVMModuleRef M);
 
+    /**
+     * Initializes all of the function passes scheduled in the function pass<br>
+     * manager. Returns 1 if any of the passes modified the module, 0 otherwise.<br>
+     * 
+     * @see llvm::FunctionPassManager::doInitialization
+     */
     public void initialize() {
         boolean err = LLVMInitializeFunctionPassManager(manager) != 0;
         if (err) {
@@ -52,6 +81,13 @@ public class PassManager {
         }
     }
 
+    /**
+     * Initializes, executes on the provided module, and finalizes all of the<br>
+     * passes scheduled in the pass manager. Returns 1 if any of the passes<br>
+     * modified the module, 0 otherwise.<br>
+     * 
+     * @see llvm::PassManager::run(Module&)
+     */
     public void runForModule(Module M) {
         boolean err = LLVMRunPassManager(manager, M.module()) != 0;
         if (err) {
@@ -59,6 +95,14 @@ public class PassManager {
         }
     }
 
+    /**
+     * Executes all of the function passes scheduled in the function pass
+     * manager<br>
+     * on the provided function. Returns 1 if any of the passes modified the<br>
+     * function, false otherwise.<br>
+     * 
+     * @see llvm::FunctionPassManager::run(Function&)
+     */
     public void runForFunction(Value F) {
         boolean err = LLVMRunFunctionPassManager(manager, F.value()) != 0;
         if (err) {

@@ -100,6 +100,9 @@ public class ExecutionEngine {
         LLVMAddModule(engine, M.module());
     }
 
+    /**
+     * @deprecated Use LLVMAddModule instead.
+     */
     public void addModuleProvider(LLVMModuleProviderRef MP) {
         LLVMAddModuleProvider(engine, MP);
     }

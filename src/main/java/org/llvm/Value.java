@@ -21,34 +21,67 @@ public class Value {
         this.value = value;
     }
 
+    /**
+     * Obtain the type of a value.<br>
+     * * @see llvm::Value::getType()
+     */
     public TypeRef typeOf() {
         return new TypeRef(LLVMTypeOf(value));
     }
 
+    /**
+     * Obtain the string name of a value.<br>
+     * 
+     * @see llvm::Value::getName()
+     */
     public String getValueName() {
         return LLVMGetValueName(value).getCString();
     }
 
+    /**
+     * Set the string name of a value.<br>
+     * 
+     * @see llvm::Value::setName()
+     */
     public void setValueName(String Name) {
         LLVMSetValueName(value, Pointer.pointerToCString(Name));
     }
 
+    /**
+     * Dump a representation of a value to stderr.<br>
+     * 
+     * @see llvm::Value::dump()
+     */
     public void dumpValue() {
         LLVMDumpValue(value);
     }
 
+    /**
+     * Replace all uses of a value with another one.<br>
+     * 
+     * @see llvm::Value::replaceAllUsesWith()
+     */
     public void replaceAllUsesWith(Value NewVal) {
         LLVMReplaceAllUsesWith(value, NewVal.value());
     }
 
+    /**
+     * Determine whether an instruction has any metadata attached.
+     */
     public int hasMetadata() {
         return LLVMHasMetadata(value);
     }
 
+    /**
+     * Return metadata associated with an instruction value.
+     */
     public Value getMetadata(int KindID) {
         return new Value(LLVMGetMetadata(value, KindID));
     }
 
+    /**
+     * Set metadata associated with an instruction value.
+     */
     public void setMetadata(int KindID, Value Node) {
         LLVMSetMetadata(value, KindID, Node.value());
     }
@@ -311,14 +344,25 @@ public class Value {
         return new Value(LLVMIsAVAArgInst(value));
     }
 
+    /**
+     * Determine whether the specified constant instance is constant.
+     */
     public boolean IsConstant() {
         return LLVMIsConstant(value) != 0;
     }
 
+    /**
+     * Determine whether a value instance is null.<br>
+     * 
+     * @see llvm::Constant::isNullValue()
+     */
     public boolean IsNull() {
         return LLVMIsNull(value) != 0;
     }
 
+    /**
+     * Determine whether a value instance is undefined.
+     */
     public boolean IsUndef() {
         return LLVMIsUndef(value) != 0;
     }
@@ -329,24 +373,50 @@ public class Value {
     // TODO: move
     public static native LLVMUseRef LLVMGetNextUse(LLVMUseRef U);
 
+    /**
+     * Obtain the user value for a user.<br>
+     * The returned value corresponds to a llvm::User type.<br>
+     * 
+     * @see llvm::Use::getUser()
+     */
     // TODO: move
     public static Value getUser(LLVMUseRef U) {
         return new Value(LLVMGetUser(U));
     }
 
+    /**
+     * Obtain the value this use corresponds to.<br>
+     * 
+     * @see llvm::Use::get()
+     */
     // TODO: move
     public static Value getUsedValue(LLVMUseRef U) {
         return new Value(LLVMGetUsedValue(U));
     }
 
+    /**
+     * Obtain an operand at a specific index in a llvm::User value.<br>
+     * 
+     * @see llvm::User::getOperand()
+     */
     public Value getOperand(int Index) {
         return new Value(LLVMGetOperand(value, Index));
     }
 
+    /**
+     * Set an operand at a specific index in a llvm::User value.<br>
+     * 
+     * @see llvm::User::setOperand()
+     */
     public void setOperand(int Index, Value Val) {
         LLVMSetOperand(value, Index, Val.value());
     }
 
+    /**
+     * Obtain the number of operands in a llvm::User value.<br>
+     * 
+     * @see llvm::User::getNumOperands()
+     */
     public int getNumOperands() {
         return LLVMGetNumOperands(value);
     }
@@ -370,14 +440,29 @@ public class Value {
         return new ValueRef(LLVMMDNode(value));
     }*/
 
+    /**
+     * Obtain the zero extended value for an integer constant value.<br>
+     * 
+     * @see llvm::ConstantInt::getZExtValue()
+     */
     public long constIntGetZExtValue() {
         return LLVMConstIntGetZExtValue(value);
     }
 
+    /**
+     * Obtain the sign extended value for an integer constant value.<br>
+     * 
+     * @see llvm::ConstantInt::getSExtValue()
+     */
     public long constIntGetSExtValue() {
         return LLVMConstIntGetSExtValue(value);
     }
 
+    /**
+     * Create a ConstantDataSequential and initialize it with a string.<br>
+     * 
+     * @see llvm::ConstantDataArray::getString()
+     */
     public static Value constStringInContext(Context C, String Str, int Length,
             boolean DontNullTerminate) {
         return new Value(LLVMConstStringInContext(C.context(),
@@ -391,24 +476,50 @@ public class Value {
                 Count, Packed ? 1 : 0));
     }*/
 
+    /**
+     * Create a ConstantDataSequential with string content in the global
+     * context.<br>
+     * This is the same as LLVMConstStringInContext except it operates on the<br>
+     * global context.<br>
+     * 
+     * @see LLVMConstStringInContext()<br>
+     * @see llvm::ConstantDataArray::getString()
+     */
     public static Value constString(String Str, int Length,
             boolean DontNullTerminate) {
         return new Value(LLVMConstString(Pointer.pointerToCString(Str), Length,
                 DontNullTerminate ? 1 : 0));
     }
 
+    /**
+     * Create a ConstantArray from values.<br>
+     * 
+     * @see llvm::ConstantArray::get()
+     */
     // TODO: change Pointer to array
     public static Value constArray(TypeRef ElementTy,
             Pointer<LLVMValueRef> ConstantVals, int Length) {
         return new Value(LLVMConstArray(ElementTy.type(), ConstantVals, Length));
     }
 
+    /**
+     * Create a ConstantStruct in the global Context.<br>
+     * This is the same as LLVMConstStructInContext except it operates on the<br>
+     * global Context.<br>
+     * 
+     * @see LLVMConstStructInContext()
+     */
     // TODO: change Pointer to array
     public static Value constStruct(Pointer<LLVMValueRef> ConstantVals,
             int Count, boolean Packed) {
         return new Value(LLVMConstStruct(ConstantVals, Count, Packed ? 1 : 0));
     }
 
+    /**
+     * Create a ConstantVector from values.<br>
+     * 
+     * @see llvm::ConstantVector::get()
+     */
     // TODO: change Pointer to array
     public static Value constVector(Pointer<LLVMValueRef> ScalarConstantVals,
             int Size) {
@@ -786,159 +897,357 @@ public class Value {
         LLVMSetGlobalConstant(value, IsConstant ? 1 : 0);
     }
 
-    // this.value is Fn
+    /**
+     * Advance a Function iterator to the next Function.<br>
+     * Returns null if the iterator was already at the end and there are no more<br>
+     * functions.
+     */
     public Value getNextFunction() {
         return new Value(LLVMGetNextFunction(value));
     }
 
+    /**
+     * Decrement a Function iterator to the previous Function.<br>
+     * Returns null if the iterator was already at the beginning and there are<br>
+     * no previous functions.
+     */
     public Value getPreviousFunction() {
         return new Value(LLVMGetPreviousFunction(value));
     }
 
-    // value is Fn
+    /**
+     * Remove a function from its containing module and deletes it.<br>
+     * 
+     * @see llvm::Function::eraseFromParent()
+     */
     public void deleteFunction() {
         LLVMDeleteFunction(value);
     }
 
+    /**
+     * Obtain the ID number from a function instance.<br>
+     * 
+     * @see llvm::Function::getIntrinsicID()
+     */
     public void getIntrinsicID() {
         LLVMGetIntrinsicID(value);
     }
 
+    /**
+     * Obtain the calling function of a function.<br>
+     * The returned value corresponds to the LLVMCallConv enumeration.<br>
+     * 
+     * @see llvm::Function::getCallingConv()
+     */
     public void getFunctionCallConv() {
         LLVMGetFunctionCallConv(value);
     }
 
+    /**
+     * Set the calling convention of a function.<br>
+     * 
+     * @see llvm::Function::setCallingConv()<br>
+     * @param CC
+     *            LLVMCallConv to set calling convention to
+     */
     public void setFunctionCallConv(int CC) {
         LLVMSetFunctionCallConv(value, CC);
     }
 
+    /**
+     * Obtain the name of the garbage collector to use during code<br>
+     * generation.<br>
+     * 
+     * @see llvm::Function::getGC()
+     */
     public String getGC() {
         return LLVMGetGC(value).getCString();
     }
 
+    /**
+     * Define the garbage collector to use during code generation.<br>
+     * 
+     * @see llvm::Function::setGC()
+     */
     public void setGC(String Name) {
         LLVMSetGC(value, Pointer.pointerToCString(Name));
     }
 
+    /**
+     * Add an attribute to a function.<br>
+     * 
+     * @see llvm::Function::addAttribute()
+     */
     public void addFunctionAttr(IntValuedEnum<LLVMAttribute> PA) {
         LLVMAddFunctionAttr(value, PA);
     }
 
+    /**
+     * Obtain an attribute from a function.<br>
+     * 
+     * @see llvm::Function::getAttributes()
+     */
     public ValuedEnum<LLVMAttribute> getFunctionAttr() {
         return LLVMGetFunctionAttr(value);
     }
 
+    /**
+     * Remove an attribute from a function.
+     */
     public void removeFunctionAttr(IntValuedEnum<LLVMAttribute> PA) {
         LLVMRemoveFunctionAttr(value, PA);
     }
 
+    /**
+     * Obtain the number of parameters in a function.<br>
+     * 
+     * @see llvm::Function::arg_size()
+     */
     public int countParams() {
         return LLVMCountParams(value);
     }
 
+    /**
+     * Obtain the parameters in a function.<br>
+     * The takes a pointer to a pre-allocated array of LLVMValueRef that is<br>
+     * at least LLVMCountParams() long. This array will be filled with<br>
+     * LLVMValueRef instances which correspond to the parameters the<br>
+     * function receives. Each LLVMValueRef corresponds to a llvm::Argument<br>
+     * instance.<br>
+     * 
+     * @see llvm::Function::arg_begin()
+     */
     public void getParams(Pointer<LLVMValueRef> Params) {
         LLVMGetParams(value, Params);
     }
 
+    /**
+     * Obtain the parameter at the specified index.<br>
+     * Parameters are indexed from 0.<br>
+     * 
+     * @see llvm::Function::arg_begin()
+     */
     public Value getParam(int Index) {
         return new Value(LLVMGetParam(value, Index));
     }
 
+    /**
+     * Obtain the function to which this argument belongs.<br>
+     * Unlike other functions in this group, this one takes a LLVMValueRef<br>
+     * that corresponds to a llvm::Attribute.<br>
+     * The returned LLVMValueRef is the llvm::Function to which this<br>
+     * argument belongs.
+     */
     public Value getParamParent() {
         return new Value(LLVMGetParamParent(value));
     }
 
+    /**
+     * Obtain the first parameter to a function.<br>
+     * 
+     * @see llvm::Function::arg_begin()
+     */
     public Value getFirstParam() {
         return new Value(LLVMGetFirstParam(value));
     }
 
+    /**
+     * Obtain the last parameter to a function.<br>
+     * 
+     * @see llvm::Function::arg_end()
+     */
     public Value getLastParam() {
         return new Value(LLVMGetLastParam(value));
     }
 
+    /**
+     * Obtain the next parameter to a function.<br>
+     * This takes a LLVMValueRef obtained from LLVMGetFirstParam() (which is<br>
+     * actually a wrapped iterator) and obtains the next parameter from the<br>
+     * underlying iterator.
+     */
     public Value getNextParam() {
         return new Value(LLVMGetNextParam(value));
     }
 
+    /**
+     * Obtain the previous parameter to a function.<br>
+     * This is the opposite of LLVMGetNextParam().
+     */
     public Value getPreviousParam() {
         return new Value(LLVMGetPreviousParam(value));
     }
 
+    /**
+     * Add an attribute to a function argument.<br>
+     * 
+     * @see llvm::Argument::addAttr()
+     */
     public void addAttribute(IntValuedEnum<LLVMAttribute> PA) {
         LLVMAddAttribute(value, PA);
     }
 
+    /**
+     * Remove an attribute from a function argument.<br>
+     * 
+     * @see llvm::Argument::removeAttr()
+     */
     public void removeAttribute(IntValuedEnum<LLVMAttribute> PA) {
         LLVMRemoveAttribute(value, PA);
     }
 
+    /**
+     * Get an attribute from a function argument.
+     */
     public ValuedEnum<LLVMAttribute> getAttribute() {
         return LLVMGetAttribute(value);
     }
 
+    /**
+     * Set the alignment for a function parameter.<br>
+     * 
+     * @see llvm::Argument::addAttr()<br>
+     * @see llvm::Attribute::constructAlignmentFromInt()
+     */
     public void setParamAlignment(int align) {
         LLVMSetParamAlignment(value, align);
     }
 
-    // BasicBlock
+    /**
+     * Determine whether a LLVMValueRef is itself a basic block.
+     */
     public boolean isBasicBlock() {
         return LLVMValueIsBasicBlock(value) != 0;
     }
 
+    /**
+     * Convert a LLVMValueRef to a LLVMBasicBlockRef instance.
+     */
     public BasicBlock asBasicBlock() {
         return new BasicBlock(LLVMValueAsBasicBlock(value));
     }
 
-    // Fn
+    /**
+     * Obtain the number of basic blocks in a function.<br>
+     * 
+     * @param Fn
+     *            Function value to operate on.
+     */
     public int countBasicBlocks() {
         return LLVMCountBasicBlocks(value);
     }
 
+    /**
+     * Obtain all of the basic blocks in a function.<br>
+     * This operates on a function value. The BasicBlocks parameter is a<br>
+     * pointer to a pre-allocated array of LLVMBasicBlockRef of at least<br>
+     * LLVMCountBasicBlocks() in length. This array is populated with<br>
+     * LLVMBasicBlockRef instances.
+     */
     public void getBasicBlocks(Pointer<LLVMBasicBlockRef> BasicBlocks) {
         LLVMGetBasicBlocks(value, BasicBlocks);
     }
 
+    /**
+     * Obtain the first basic block in a function.<br>
+     * The returned basic block can be used as an iterator. You will likely<br>
+     * eventually call into LLVMGetNextBasicBlock() with it.<br>
+     * 
+     * @see llvm::Function::begin()
+     */
     public BasicBlock getFirstBasicBlock() {
         return new BasicBlock(LLVMGetFirstBasicBlock(value));
     }
 
+    /**
+     * Obtain the last basic block in a function.<br>
+     * 
+     * @see llvm::Function::end()
+     */
     public BasicBlock getLastBasicBlock() {
         return new BasicBlock(LLVMGetLastBasicBlock(value));
     }
 
+    /**
+     * Obtain the basic block that corresponds to the entry point of a<br>
+     * function.<br>
+     * 
+     * @see llvm::Function::getEntryBlock()
+     */
     public BasicBlock getEntryBasicBlock() {
         return new BasicBlock(LLVMGetEntryBasicBlock(value));
     }
 
-    // this.value is Fn: in Fn, append a new BB and return it
+    /**
+     * Append a basic block to the end of a function.<br>
+     * 
+     * @see llvm::BasicBlock::Create()
+     */
     public BasicBlock appendBasicBlockInContext(Context C, String Name) {
         return new BasicBlock(LLVMAppendBasicBlockInContext(C.context(), value,
                 Pointer.pointerToCString(Name)));
     }
 
-    // this.value is Fn: in Fn, append a new BB and return it
+    /**
+     * Append a basic block to the end of a function using the global<br>
+     * context.<br>
+     * 
+     * @see llvm::BasicBlock::Create()
+     */
     public BasicBlock appendBasicBlock(String Name) {
         return new BasicBlock(LLVMAppendBasicBlock(value,
                 Pointer.pointerToCString(Name)));
     }
 
     // Instruction
+
+    /**
+     * Obtain the basic block to which an instruction belongs.<br>
+     * 
+     * @see llvm::Instruction::getParent()
+     */
     public BasicBlock getInstructionParent() {
         return new BasicBlock(LLVMGetInstructionParent(value));
     }
 
+    /**
+     * Obtain the instruction that occurs after the one specified.<br>
+     * The next instruction will be from the same basic block.<br>
+     * If this is the last instruction in a basic block, NULL will be<br>
+     * returned.
+     */
     public Value getNextInstruction(Value Inst) {
         return new Value(LLVMGetNextInstruction(value));
     }
 
+    /**
+     * Obtain the instruction that occured before this one.<br>
+     * If the instruction is the first instruction in a basic block, NULL<br>
+     * will be returned.
+     */
     public Value getPreviousInstruction(Value Inst) {
         return new Value(LLVMGetPreviousInstruction(value));
     }
 
+    /**
+     * Set the calling convention for a call instruction.<br>
+     * This expects an LLVMValueRef that corresponds to a llvm::CallInst or<br>
+     * llvm::InvokeInst.<br>
+     * 
+     * @see llvm::CallInst::setCallingConv()<br>
+     * @see llvm::InvokeInst::setCallingConv()
+     */
     public void setInstructionCallConv(int CC) {
         LLVMSetInstructionCallConv(value, CC);
     }
 
+    /**
+     * Obtain the calling convention for a call instruction.<br>
+     * This is the opposite of LLVMSetInstructionCallConv(). Reads its<br>
+     * usage.<br>
+     * 
+     * @see LLVMSetInstructionCallConv()
+     */
     public int getInstructionCallConv() {
         return LLVMGetInstructionCallConv(value);
     }
@@ -957,15 +1266,29 @@ public class Value {
         LLVMSetInstrParamAlignment(value, index, align);
     }
 
+    /**
+     * Obtain whether a call instruction is a tail call.<br>
+     * This only works on llvm::CallInst instructions.<br>
+     * 
+     * @see llvm::CallInst::isTailCall()
+     */
     public boolean isTailCall() {
         return LLVMIsTailCall(value) != 0;
     }
 
+    /**
+     * Set whether a call instruction is a tail call.<br>
+     * This only works on llvm::CallInst instructions.<br>
+     * 
+     * @see llvm::CallInst::setTailCall()
+     */
     public void setTailCall(boolean IsTailCall) {
         LLVMSetTailCall(value, IsTailCall ? 1 : 0);
     }
 
-    // this.value is phi node
+    /**
+     * Add an incoming value to the end of a PHI list.
+     */
     /*public void AddIncoming(Pointer<LLVMValueRef> IncomingValues,
             Pointer<LLVMBasicBlockRef > IncomingBlocks, int Count) {*/
     public void addIncoming(Value[] IncomingValues,
@@ -987,14 +1310,23 @@ public class Value {
         LLVMAddIncoming(value, ptrVals, ptrBlocks, Count);
     }
 
+    /**
+     * Obtain the number of incoming basic blocks to a PHI node.
+     */
     public int countIncoming() {
         return LLVMCountIncoming(value);
     }
 
+    /**
+     * Obtain an incoming value to a PHI node as a LLVMValueRef.
+     */
     public Value getIncomingValue(int Index) {
         return new Value(LLVMGetIncomingValue(value, Index));
     }
 
+    /**
+     * Obtain an incoming value to a PHI node as a LLVMBasicBlockRef.
+     */
     public BasicBlock getIncomingBlock(int Index) {
         return new BasicBlock(LLVMGetIncomingBlock(value, Index));
     }
