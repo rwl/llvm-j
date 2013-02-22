@@ -14,11 +14,11 @@ public class Context {
 
     private LLVMContextRef context;
 
-    /*package*/LLVMContextRef context() {
+    LLVMContextRef context() {
         return context;
     }
 
-    /*package*/Context(LLVMContextRef context) {
+    Context(LLVMContextRef context) {
         this.context = context;
     }
 
@@ -40,11 +40,11 @@ public class Context {
 
     /**
      * Obtain the context to which this module is associated.<br>
-     * 
+     *
      * @see Module::getContext()
      */
-    public static Context getModuleContext(Module M) {
-        return new Context(LLVMGetModuleContext(M.module()));
+    public static Context getModuleContext(Module m) {
+        return new Context(LLVMGetModuleContext(m.module()));
     }
 
     public void finalize() {
@@ -53,7 +53,7 @@ public class Context {
 
     /**
      * Destroy a context instance.<br>
-     * * This should be called for every call to LLVMContextCreate() or memory<br>
+     * This should be called for every call to LLVMContextCreate() or memory<br>
      * will be leaked.
      */
     public void dispose() {

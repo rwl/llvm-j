@@ -11,7 +11,7 @@ public class ExecutionEngine {
 
     private LLVMExecutionEngineRef engine;
 
-    /*package*/LLVMExecutionEngineRef engine() {
+    LLVMExecutionEngineRef engine() {
         return engine;
     }
 
@@ -27,16 +27,16 @@ public class ExecutionEngine {
         LLVMDisposeExecutionEngine(engine);
     }
 
-    public static ExecutionEngine createForModule(Module M) {
-        Pointer<Pointer<Byte>> OutError = Pointer.allocateBytes(1, 1024);
+    public static ExecutionEngine createForModule(Module m) {
+        Pointer<Pointer<Byte>> outError = Pointer.allocateBytes(1, 1024);
 
         Pointer<LLVMExecutionEngineRef> pEE = Pointer
                 .allocateTypedPointer(LLVMExecutionEngineRef.class);
 
-        boolean err = LLVMCreateExecutionEngineForModule(pEE, M.module(),
-                OutError) != 0;
+        boolean err = LLVMCreateExecutionEngineForModule(pEE, m.module(),
+                outError) != 0;
         if (err) {
-            String msg = OutError.get().getCString();
+            String msg = outError.get().getCString();
             throw new RuntimeException("can't create execution engine: " + msg);
         }
 
@@ -44,25 +44,25 @@ public class ExecutionEngine {
     }
 
     /*public static native int LLVMCreateInterpreterForModule(
-            Pointer<Pointer<LLVMOpaqueExecutionEngine>> OutInterp,
-            LLVMModuleRef M, Pointer<Pointer<Byte>> OutError);
+            Pointer<Pointer<LLVMOpaqueExecutionEngine>> outInterp,
+            LLVMModuleRef m, Pointer<Pointer<Byte>> outError);
 
     public static native int LLVMCreateJITCompilerForModule(
-            Pointer<Pointer<LLVMOpaqueExecutionEngine>> OutJIT,
-            LLVMModuleRef M, int OptLevel, Pointer<Pointer<Byte>> OutError);
+            Pointer<Pointer<LLVMOpaqueExecutionEngine>> outJIT,
+            LLVMModuleRef m, int optLevel, Pointer<Pointer<Byte>> outError);
 
     public static native int LLVMCreateExecutionEngine(
-            Pointer<Pointer<LLVMOpaqueExecutionEngine>> OutEE,
-            LLVMModuleProviderRef MP, Pointer<Pointer<Byte>> OutError);
+            Pointer<Pointer<LLVMOpaqueExecutionEngine>> outEE,
+            LLVMModuleProviderRef mp, Pointer<Pointer<Byte>> outError);
 
     public static native int LLVMCreateInterpreter(
-            Pointer<Pointer<LLVMOpaqueExecutionEngine>> OutInterp,
-            LLVMModuleProviderRef MP, Pointer<Pointer<Byte>> OutError);
+            Pointer<Pointer<LLVMOpaqueExecutionEngine>> outInterp,
+            LLVMModuleProviderRef mp, Pointer<Pointer<Byte>> outError);
 
     public static native int LLVMCreateJITCompiler(
-            Pointer<Pointer<LLVMOpaqueExecutionEngine>> OutJIT,
-            LLVMModuleProviderRef MP, int OptLevel,
-            Pointer<Pointer<Byte>> OutError);*/
+            Pointer<Pointer<LLVMOpaqueExecutionEngine>> outJIT,
+            LLVMModuleProviderRef mp, int optLevel,
+            Pointer<Pointer<Byte>> outError);*/
 
     public void runStaticConstructors() {
         LLVMRunStaticConstructors(engine);
@@ -72,92 +72,92 @@ public class ExecutionEngine {
         LLVMRunStaticDestructors(engine);
     }
 
-    public boolean runFunctionAsMain(Value F, int ArgC,
-            Pointer<Pointer<Byte>> ArgV, Pointer<Pointer<Byte>> EnvP) {
-        return LLVMRunFunctionAsMain(engine, F.value(), ArgC, ArgV, EnvP) != 0;
+    public boolean runFunctionAsMain(Value f, int argC,
+            Pointer<Pointer<Byte>> argV, Pointer<Pointer<Byte>> envP) {
+        return LLVMRunFunctionAsMain(engine, f.value(), argC, argV, envP) != 0;
     }
 
-    public GenericValue runFunction(Value F, GenericValue... Args) {
-        // Pointer<Pointer<LLVMOpaqueGenericValue > > Args) {
-        int N = Args.length;
-        LLVMGenericValueRef[] inner = new LLVMGenericValueRef[N];
-        for (int i = 0; i < N; i++) {
-            inner[i] = Args[i].ref();
+    public GenericValue runFunction(Value f, GenericValue... args) {
+        // Pointer<Pointer<LLVMOpaqueGenericValue>> args) {
+        int n = args.length;
+        LLVMGenericValueRef[] inner = new LLVMGenericValueRef[n];
+        for (int i = 0; i < n; i++) {
+            inner[i] = args[i].ref();
         } // .value(); }
 
         Pointer<LLVMGenericValueRef> array = Pointer.allocateTypedPointers(
-                LLVMGenericValueRef.class, N);
+                LLVMGenericValueRef.class, n);
         array.setArray(inner);
 
-        return new GenericValue(LLVMRunFunction(engine, F.value(), N, array));
+        return new GenericValue(LLVMRunFunction(engine, f.value(), n, array));
     }
 
-    public void freeMachineCodeForFunction(Value F) {
-        LLVMFreeMachineCodeForFunction(engine, F.value());
+    public void freeMachineCodeForFunction(Value f) {
+        LLVMFreeMachineCodeForFunction(engine, f.value());
     }
 
-    public void addModule(Module M) {
-        LLVMAddModule(engine, M.module());
+    public void addModule(Module m) {
+        LLVMAddModule(engine, m.module());
     }
 
     /**
      * @deprecated Use LLVMAddModule instead.
      */
-    public void addModuleProvider(LLVMModuleProviderRef MP) {
-        LLVMAddModuleProvider(engine, MP);
+    public void addModuleProvider(LLVMModuleProviderRef mp) {
+        LLVMAddModuleProvider(engine, mp);
     }
 
-    public Module removeModule(Module M) {
-        Pointer<Pointer<Byte>> OutError = Pointer.allocateBytes(1, 1024);
-        Pointer<LLVMModuleRef> OutMod = Pointer
+    public Module removeModule(Module m) {
+        Pointer<Pointer<Byte>> outError = Pointer.allocateBytes(1, 1024);
+        Pointer<LLVMModuleRef> outMod = Pointer
                 .allocateTypedPointer(LLVMModuleRef.class);
-        boolean err = LLVMRemoveModule(engine, M.module(), OutMod, OutError) != 0;
+        boolean err = LLVMRemoveModule(engine, m.module(), outMod, outError) != 0;
         if (err) {
-            String msg = OutError.get().getCString();
+            String msg = outError.get().getCString();
             throw new RuntimeException("can't remove module: " + msg);
         }
-        return new Module(OutMod.get());
+        return new Module(outMod.get());
     }
 
     // TODO: make sure of this
-    public Module removeModuleProvider(LLVMModuleProviderRef MP) {
-        Pointer<Pointer<Byte>> OutError = Pointer.allocateBytes(1, 1024);
-        Pointer<LLVMModuleRef> OutMod = Pointer
+    public Module removeModuleProvider(LLVMModuleProviderRef mp) {
+        Pointer<Pointer<Byte>> outError = Pointer.allocateBytes(1, 1024);
+        Pointer<LLVMModuleRef> outMod = Pointer
                 .allocateTypedPointer(LLVMModuleRef.class);
-        boolean err = LLVMRemoveModuleProvider(engine, MP, OutMod, OutError) != 0;
+        boolean err = LLVMRemoveModuleProvider(engine, mp, outMod, outError) != 0;
         if (err) {
-            String msg = OutError.get().getCString();
+            String msg = outError.get().getCString();
             throw new RuntimeException("can't remove module provider: " + msg);
         }
-        return new Module(OutMod.get());
+        return new Module(outMod.get());
     }
 
-    public Value findFunction(String Name) { // Pointer<Pointer<LLVMOpaqueValue
-                                             // > > OutFn) {
-        Pointer<Byte> cstr = Pointer.pointerToCString(Name);
-        Pointer<LLVMValueRef> OutFn = Pointer
+    public Value findFunction(String name) { // Pointer<Pointer<LLVMOpaqueValue>> outFn) {
+        Pointer<Byte> cstr = Pointer.pointerToCString(name);
+        Pointer<LLVMValueRef> outFn = Pointer
                 .allocateTypedPointer(LLVMValueRef.class);
-        boolean err = LLVMFindFunction(engine, cstr, OutFn) != 0;
-        if (err)
-            throw new RuntimeException("LLVMFindFunction can't find " + Name);
-        return new Value(OutFn.get());
+        boolean err = LLVMFindFunction(engine, cstr, outFn) != 0;
+        if (err) {
+            throw new RuntimeException("LLVMFindFunction can't find " + name);
+        }
+        return new Value(outFn.get());
     }
 
     // TODO: this probably is returning a ValueRef for the recompiled Fn
-    public Pointer<?> recompileAndRelinkFunction(Value Fn) {
-        return LLVMRecompileAndRelinkFunction(engine, Fn.value());
+    public Pointer<?> recompileAndRelinkFunction(Value fn) {
+        return LLVMRecompileAndRelinkFunction(engine, fn.value());
     }
 
     public LLVMTargetDataRef getExecutionEngineTargetData() {
         return LLVMGetExecutionEngineTargetData(engine);
     }
 
-    public void addGlobalMapping(Value Global, Pointer<?> Addr) {
-        LLVMAddGlobalMapping(engine, Global.value(), Addr);
+    public void addGlobalMapping(Value global, Pointer<?> addr) {
+        LLVMAddGlobalMapping(engine, global.value(), addr);
     }
 
-    public Pointer<?> getPointerToGlobal(Value Global) {
-        return LLVMGetPointerToGlobal(engine, Global.value());
+    public Pointer<?> getPointerToGlobal(Value global) {
+        return LLVMGetPointerToGlobal(engine, global.value());
     }
 
 }

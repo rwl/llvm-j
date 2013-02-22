@@ -12,17 +12,18 @@ public class Value {
 
     private LLVMValueRef value;
 
-    /*package*/LLVMValueRef value() {
+    LLVMValueRef value() {
         return value;
     }
 
-    /*package*/Value(LLVMValueRef value) {
+    Value(LLVMValueRef value) {
         this.value = value;
     }
 
     /**
      * Obtain the type of a value.<br>
-     * * @see llvm::Value::getType()
+     *
+     * @see llvm::Value::getType()
      */
     public TypeRef typeOf() {
         return new TypeRef(LLVMTypeOf(value));
@@ -421,21 +422,21 @@ public class Value {
     }
 
     // MetaData
-    /*public ValueRef MDStringInContext(LLVMContextRef C, Pointer<Byte> Str,
-            int SLen) {
+    /*public ValueRef MDStringInContext(LLVMContextRef c, Pointer<Byte> str,
+            int sLen) {
         return new ValueRef(LLVMMDStringInContext(value));
     }
 
-    public ValueRef MDString(Pointer<Byte> Str, int SLen) {
+    public ValueRef MDString(Pointer<Byte> str, int sLen) {
         return new ValueRef(LLVMMDString(value));
     }
 
-    public ValueRef MDNodeInContext(LLVMContextRef C,
-            Pointer<LLVMValueRef> Vals, int Count) {
+    public ValueRef MDNodeInContext(LLVMContextRef c,
+            Pointer<LLVMValueRef> vals, int count) {
         return new ValueRef(LLVMMDNodeInContext(value));
     }
 
-    public ValueRef MDNode(Pointer<LLVMValueRef> Vals, int Count) {
+    public ValueRef MDNode(Pointer<LLVMValueRef> vals, int count) {
         return new ValueRef(LLVMMDNode(value));
     }*/
 
@@ -469,10 +470,10 @@ public class Value {
                         : 0));
     }
 
-    /*public ValueRef constStructInContext(Context C, ValueRef[] ConstantVals,
-            int Count, boolean Packed) {
-        return new ValueRef(LLVMConstStructInContext(C.context(), ConstantVals,
-                Count, Packed ? 1 : 0));
+    /*public ValueRef constStructInContext(Context c, ValueRef[] constantVals,
+            int count, boolean packed) {
+        return new ValueRef(LLVMConstStructInContext(C.context(), constantVals,
+                count, packed ? 1 : 0));
     }*/
 
     /**
@@ -536,13 +537,13 @@ public class Value {
      * @see llvm::ConstantVector::get()
      */
     // TODO: change Pointer to array
-    public static Value constVector(Pointer<LLVMValueRef> ScalarConstantVals,
-            int Size) {
-        return new Value(LLVMConstVector(ScalarConstantVals, Size));
+    public static Value constVector(Pointer<LLVMValueRef> scalarConstantVals,
+            int size) {
+        return new Value(LLVMConstVector(scalarConstantVals, size));
     }
 
     public static native IntValuedEnum<LLVMOpcode> GetConstOpcode(
-            LLVMValueRef ConstantVal);
+            LLVMValueRef constantVal);
 
     public Value constNeg() {
         return new Value(LLVMConstNeg(value));
@@ -564,274 +565,274 @@ public class Value {
         return new Value(LLVMConstNot(value));
     }
 
-    public static Value constAdd(Value LHSConstant, Value RHSConstant) {
-        return new Value(LLVMConstAdd(LHSConstant.value(), RHSConstant.value()));
+    public static Value constAdd(Value lhsConstant, Value rhsConstant) {
+        return new Value(LLVMConstAdd(lhsConstant.value(), rhsConstant.value()));
     }
 
-    public static Value constNSWAdd(Value LHSConstant, Value RHSConstant) {
-        return new Value(LLVMConstNSWAdd(LHSConstant.value(),
-                RHSConstant.value()));
+    public static Value constNSWAdd(Value lhsConstant, Value rhsConstant) {
+        return new Value(LLVMConstNSWAdd(lhsConstant.value(),
+                rhsConstant.value()));
     }
 
-    public static Value constNUWAdd(Value LHSConstant, Value RHSConstant) {
-        return new Value(LLVMConstNUWAdd(LHSConstant.value(),
-                RHSConstant.value()));
+    public static Value constNUWAdd(Value lhsConstant, Value rhsConstant) {
+        return new Value(LLVMConstNUWAdd(lhsConstant.value(),
+                rhsConstant.value()));
     }
 
-    public static Value constFAdd(Value LHSConstant, Value RHSConstant) {
+    public static Value constFAdd(Value lhsConstant, Value rhsConstant) {
         return new Value(
-                LLVMConstFAdd(LHSConstant.value(), RHSConstant.value()));
+                LLVMConstFAdd(lhsConstant.value(), rhsConstant.value()));
     }
 
-    public static Value constSub(Value LHSConstant, Value RHSConstant) {
-        return new Value(LLVMConstSub(LHSConstant.value(), RHSConstant.value()));
+    public static Value constSub(Value lhsConstant, Value rhsConstant) {
+        return new Value(LLVMConstSub(lhsConstant.value(), rhsConstant.value()));
     }
 
-    public static Value constNSWSub(Value LHSConstant, Value RHSConstant) {
-        return new Value(LLVMConstNSWSub(LHSConstant.value(),
-                RHSConstant.value()));
+    public static Value constNSWSub(Value lhsConstant, Value rhsConstant) {
+        return new Value(LLVMConstNSWSub(lhsConstant.value(),
+                rhsConstant.value()));
     }
 
-    public static Value constNUWSub(Value LHSConstant, Value RHSConstant) {
-        return new Value(LLVMConstNUWSub(LHSConstant.value(),
-                RHSConstant.value()));
+    public static Value constNUWSub(Value lhsConstant, Value rhsConstant) {
+        return new Value(LLVMConstNUWSub(lhsConstant.value(),
+                rhsConstant.value()));
     }
 
-    public static Value constFSub(Value LHSConstant, Value RHSConstant) {
+    public static Value constFSub(Value lhsConstant, Value rhsConstant) {
         return new Value(
-                LLVMConstFSub(LHSConstant.value(), RHSConstant.value()));
+                LLVMConstFSub(lhsConstant.value(), rhsConstant.value()));
     }
 
-    public static Value constMul(Value LHSConstant, Value RHSConstant) {
-        return new Value(LLVMConstMul(LHSConstant.value(), RHSConstant.value()));
+    public static Value constMul(Value lhsConstant, Value rhsConstant) {
+        return new Value(LLVMConstMul(lhsConstant.value(), rhsConstant.value()));
     }
 
-    public static Value constNSWMul(Value LHSConstant, Value RHSConstant) {
-        return new Value(LLVMConstNSWMul(LHSConstant.value(),
-                RHSConstant.value()));
+    public static Value constNSWMul(Value lhsConstant, Value rhsConstant) {
+        return new Value(LLVMConstNSWMul(lhsConstant.value(),
+                rhsConstant.value()));
     }
 
-    public static Value constNUWMul(Value LHSConstant, Value RHSConstant) {
-        return new Value(LLVMConstNUWMul(LHSConstant.value(),
-                RHSConstant.value()));
+    public static Value constNUWMul(Value lhsConstant, Value rhsConstant) {
+        return new Value(LLVMConstNUWMul(lhsConstant.value(),
+                rhsConstant.value()));
     }
 
-    public static Value constFMul(Value LHSConstant, Value RHSConstant) {
+    public static Value constFMul(Value lhsConstant, Value rhsConstant) {
         return new Value(
-                LLVMConstFMul(LHSConstant.value(), RHSConstant.value()));
+                LLVMConstFMul(lhsConstant.value(), rhsConstant.value()));
     }
 
-    public static Value constUDiv(Value LHSConstant, Value RHSConstant) {
+    public static Value constUDiv(Value lhsConstant, Value rhsConstant) {
         return new Value(
-                LLVMConstUDiv(LHSConstant.value(), RHSConstant.value()));
+                LLVMConstUDiv(lhsConstant.value(), rhsConstant.value()));
     }
 
-    public static Value constSDiv(Value LHSConstant, Value RHSConstant) {
+    public static Value constSDiv(Value lhsConstant, Value rhsConstant) {
         return new Value(
-                LLVMConstSDiv(LHSConstant.value(), RHSConstant.value()));
+                LLVMConstSDiv(lhsConstant.value(), rhsConstant.value()));
     }
 
-    public static Value constExactSDiv(Value LHSConstant, Value RHSConstant) {
-        return new Value(LLVMConstExactSDiv(LHSConstant.value(),
-                RHSConstant.value()));
+    public static Value constExactSDiv(Value lhsConstant, Value rhsConstant) {
+        return new Value(LLVMConstExactSDiv(lhsConstant.value(),
+                rhsConstant.value()));
     }
 
-    public static Value constFDiv(Value LHSConstant, Value RHSConstant) {
+    public static Value constFDiv(Value lhsConstant, Value rhsConstant) {
         return new Value(
-                LLVMConstFDiv(LHSConstant.value(), RHSConstant.value()));
+                LLVMConstFDiv(lhsConstant.value(), rhsConstant.value()));
     }
 
-    public static Value constURem(Value LHSConstant, Value RHSConstant) {
+    public static Value constURem(Value lhsConstant, Value rhsConstant) {
         return new Value(
-                LLVMConstURem(LHSConstant.value(), RHSConstant.value()));
+                LLVMConstURem(lhsConstant.value(), rhsConstant.value()));
     }
 
-    public static Value constSRem(Value LHSConstant, Value RHSConstant) {
+    public static Value constSRem(Value lhsConstant, Value rhsConstant) {
         return new Value(
-                LLVMConstSRem(LHSConstant.value(), RHSConstant.value()));
+                LLVMConstSRem(lhsConstant.value(), rhsConstant.value()));
     }
 
-    public static Value constFRem(Value LHSConstant, Value RHSConstant) {
+    public static Value constFRem(Value lhsConstant, Value rhsConstant) {
         return new Value(
-                LLVMConstFRem(LHSConstant.value(), RHSConstant.value()));
+                LLVMConstFRem(lhsConstant.value(), rhsConstant.value()));
     }
 
-    public static Value constAnd(Value LHSConstant, Value RHSConstant) {
-        return new Value(LLVMConstAnd(LHSConstant.value(), RHSConstant.value()));
+    public static Value constAnd(Value lhsConstant, Value rhsConstant) {
+        return new Value(LLVMConstAnd(lhsConstant.value(), rhsConstant.value()));
     }
 
-    public static Value constOr(Value LHSConstant, Value RHSConstant) {
-        return new Value(LLVMConstOr(LHSConstant.value(), RHSConstant.value()));
+    public static Value constOr(Value lhsConstant, Value rhsConstant) {
+        return new Value(LLVMConstOr(lhsConstant.value(), rhsConstant.value()));
     }
 
-    public static Value constXor(Value LHSConstant, Value RHSConstant) {
-        return new Value(LLVMConstXor(LHSConstant.value(), RHSConstant.value()));
+    public static Value constXor(Value lhsConstant, Value rhsConstant) {
+        return new Value(LLVMConstXor(lhsConstant.value(), rhsConstant.value()));
     }
 
-    public static Value constICmp(IntValuedEnum<LLVMIntPredicate> Predicate,
-            Value LHSConstant, Value RHSConstant) {
-        return new Value(LLVMConstICmp(Predicate, LHSConstant.value(),
-                RHSConstant.value()));
+    public static Value constICmp(IntValuedEnum<LLVMIntPredicate> predicate,
+            Value lhsConstant, Value rhsConstant) {
+        return new Value(LLVMConstICmp(predicate, lhsConstant.value(),
+                rhsConstant.value()));
     }
 
-    public static Value constFCmp(IntValuedEnum<LLVMRealPredicate> Predicate,
-            Value LHSConstant, Value RHSConstant) {
-        return new Value(LLVMConstFCmp(Predicate, LHSConstant.value(),
-                RHSConstant.value()));
+    public static Value constFCmp(IntValuedEnum<LLVMRealPredicate> predicate,
+            Value lhsConstant, Value rhsConstant) {
+        return new Value(LLVMConstFCmp(predicate, lhsConstant.value(),
+                rhsConstant.value()));
     }
 
-    public static Value constShl(Value LHSConstant, Value RHSConstant) {
-        return new Value(LLVMConstShl(LHSConstant.value(), RHSConstant.value()));
+    public static Value constShl(Value lhsConstant, Value rhsConstant) {
+        return new Value(LLVMConstShl(lhsConstant.value(), rhsConstant.value()));
     }
 
-    public static Value constLShr(Value LHSConstant, Value RHSConstant) {
+    public static Value constLShr(Value lhsConstant, Value rhsConstant) {
         return new Value(
-                LLVMConstLShr(LHSConstant.value(), RHSConstant.value()));
+                LLVMConstLShr(lhsConstant.value(), rhsConstant.value()));
     }
 
-    public static Value constAShr(Value LHSConstant, Value RHSConstant) {
+    public static Value constAShr(Value lhsConstant, Value rhsConstant) {
         return new Value(
-                LLVMConstAShr(LHSConstant.value(), RHSConstant.value()));
+                LLVMConstAShr(lhsConstant.value(), rhsConstant.value()));
     }
 
     // TODO: fix Pointer (change to array)
-    public Value ConstGEP(Value ConstantVal,
-            Pointer<LLVMValueRef> ConstantIndices, int NumIndices) {
-        return new Value(LLVMConstGEP(ConstantVal.value(), ConstantIndices,
-                NumIndices));
+    public Value ConstGEP(Value constantVal,
+            Pointer<LLVMValueRef> constantIndices, int numIndices) {
+        return new Value(LLVMConstGEP(constantVal.value(), constantIndices,
+                numIndices));
     }
 
     // TODO: fix Pointer (change to array)
-    public static Value constInBoundsGEP(Value ConstantVal,
-            Pointer<LLVMValueRef> ConstantIndices, int NumIndices) {
-        return new Value(LLVMConstInBoundsGEP(ConstantVal.value(),
-                ConstantIndices, NumIndices));
+    public static Value constInBoundsGEP(Value constantVal,
+            Pointer<LLVMValueRef> constantIndices, int numIndices) {
+        return new Value(LLVMConstInBoundsGEP(constantVal.value(),
+                constantIndices, numIndices));
     }
 
-    public static Value constTrunc(Value ConstantVal, TypeRef ToType) {
-        return new Value(LLVMConstTrunc(ConstantVal.value(), ToType.type()));
+    public static Value constTrunc(Value constantVal, TypeRef toType) {
+        return new Value(LLVMConstTrunc(constantVal.value(), toType.type()));
     }
 
-    public static Value constSExt(Value ConstantVal, TypeRef ToType) {
-        return new Value(LLVMConstSExt(ConstantVal.value(), ToType.type()));
+    public static Value constSExt(Value constantVal, TypeRef toType) {
+        return new Value(LLVMConstSExt(constantVal.value(), toType.type()));
     }
 
-    public static Value constZExt(Value ConstantVal, TypeRef ToType) {
-        return new Value(LLVMConstZExt(ConstantVal.value(), ToType.type()));
+    public static Value constZExt(Value constantVal, TypeRef toType) {
+        return new Value(LLVMConstZExt(constantVal.value(), toType.type()));
     }
 
-    public static Value constFPTrunc(Value ConstantVal, TypeRef ToType) {
-        return new Value(LLVMConstFPTrunc(ConstantVal.value(), ToType.type()));
+    public static Value constFPTrunc(Value constantVal, TypeRef toType) {
+        return new Value(LLVMConstFPTrunc(constantVal.value(), toType.type()));
     }
 
-    public static Value constFPExt(Value ConstantVal, TypeRef ToType) {
-        return new Value(LLVMConstFPExt(ConstantVal.value(), ToType.type()));
+    public static Value constFPExt(Value constantVal, TypeRef toType) {
+        return new Value(LLVMConstFPExt(constantVal.value(), toType.type()));
     }
 
-    public static Value constUIToFP(Value ConstantVal, TypeRef ToType) {
-        return new Value(LLVMConstUIToFP(ConstantVal.value(), ToType.type()));
+    public static Value constUIToFP(Value constantVal, TypeRef toType) {
+        return new Value(LLVMConstUIToFP(constantVal.value(), toType.type()));
     }
 
-    public static Value constSIToFP(Value ConstantVal, TypeRef ToType) {
-        return new Value(LLVMConstSIToFP(ConstantVal.value(), ToType.type()));
+    public static Value constSIToFP(Value constantVal, TypeRef toType) {
+        return new Value(LLVMConstSIToFP(constantVal.value(), toType.type()));
     }
 
-    public static Value constFPToUI(Value ConstantVal, TypeRef ToType) {
-        return new Value(LLVMConstFPToUI(ConstantVal.value(), ToType.type()));
+    public static Value constFPToUI(Value constantVal, TypeRef toType) {
+        return new Value(LLVMConstFPToUI(constantVal.value(), toType.type()));
     }
 
-    public static Value constFPToSI(Value ConstantVal, TypeRef ToType) {
-        return new Value(LLVMConstFPToSI(ConstantVal.value(), ToType.type()));
+    public static Value constFPToSI(Value constantVal, TypeRef toType) {
+        return new Value(LLVMConstFPToSI(constantVal.value(), toType.type()));
     }
 
-    public static Value constPtrToInt(Value ConstantVal, TypeRef ToType) {
-        return new Value(LLVMConstPtrToInt(ConstantVal.value(), ToType.type()));
+    public static Value constPtrToInt(Value constantVal, TypeRef toType) {
+        return new Value(LLVMConstPtrToInt(constantVal.value(), toType.type()));
     }
 
-    public static Value constIntToPtr(Value ConstantVal, TypeRef ToType) {
-        return new Value(LLVMConstIntToPtr(ConstantVal.value(), ToType.type()));
+    public static Value constIntToPtr(Value constantVal, TypeRef toType) {
+        return new Value(LLVMConstIntToPtr(constantVal.value(), toType.type()));
     }
 
-    public static Value constBitCast(Value ConstantVal, TypeRef ToType) {
-        return new Value(LLVMConstBitCast(ConstantVal.value(), ToType.type()));
+    public static Value constBitCast(Value constantVal, TypeRef toType) {
+        return new Value(LLVMConstBitCast(constantVal.value(), toType.type()));
     }
 
-    public static Value constZExtOrBitCast(Value ConstantVal, TypeRef ToType) {
-        return new Value(LLVMConstZExtOrBitCast(ConstantVal.value(),
-                ToType.type()));
+    public static Value constZExtOrBitCast(Value constantVal, TypeRef toType) {
+        return new Value(LLVMConstZExtOrBitCast(constantVal.value(),
+                toType.type()));
     }
 
-    public static Value constSExtOrBitCast(Value ConstantVal, TypeRef ToType) {
-        return new Value(LLVMConstSExtOrBitCast(ConstantVal.value(),
-                ToType.type()));
+    public static Value constSExtOrBitCast(Value constantVal, TypeRef toType) {
+        return new Value(LLVMConstSExtOrBitCast(constantVal.value(),
+                toType.type()));
     }
 
-    public static Value constTruncOrBitCast(Value ConstantVal, TypeRef ToType) {
-        return new Value(LLVMConstTruncOrBitCast(ConstantVal.value(),
-                ToType.type()));
+    public static Value constTruncOrBitCast(Value constantVal, TypeRef toType) {
+        return new Value(LLVMConstTruncOrBitCast(constantVal.value(),
+                toType.type()));
     }
 
-    public static Value constPointerCast(Value ConstantVal, TypeRef ToType) {
-        return new Value(LLVMConstPointerCast(ConstantVal.value(),
-                ToType.type()));
+    public static Value constPointerCast(Value constantVal, TypeRef toType) {
+        return new Value(LLVMConstPointerCast(constantVal.value(),
+                toType.type()));
     }
 
-    public static Value constIntCast(Value ConstantVal, TypeRef ToType,
+    public static Value constIntCast(Value constantVal, TypeRef toType,
             boolean isSigned) {
-        return new Value(LLVMConstIntCast(ConstantVal.value(), ToType.type(),
+        return new Value(LLVMConstIntCast(constantVal.value(), toType.type(),
                 isSigned ? 1 : 0));
     }
 
-    public static Value constFPCast(Value ConstantVal, TypeRef ToType) {
-        return new Value(LLVMConstFPCast(ConstantVal.value(), ToType.type()));
+    public static Value constFPCast(Value constantVal, TypeRef toType) {
+        return new Value(LLVMConstFPCast(constantVal.value(), toType.type()));
     }
 
-    public static Value constSelect(Value ConstantCondition,
-            Value ConstantIfTrue, Value ConstantIfFalse) {
-        return new Value(LLVMConstSelect(ConstantCondition.value(),
-                ConstantIfTrue.value(), ConstantIfFalse.value()));
+    public static Value constSelect(Value constantCondition,
+            Value constantIfTrue, Value constantIfFalse) {
+        return new Value(LLVMConstSelect(constantCondition.value(),
+                constantIfTrue.value(), constantIfFalse.value()));
     }
 
-    public static Value constExtractElement(Value VectorConstant,
-            Value IndexConstant) {
-        return new Value(LLVMConstExtractElement(VectorConstant.value(),
-                IndexConstant.value()));
+    public static Value constExtractElement(Value vectorConstant,
+            Value indexConstant) {
+        return new Value(LLVMConstExtractElement(vectorConstant.value(),
+                indexConstant.value()));
     }
 
-    public static Value constInsertElement(Value VectorConstant,
-            Value ElementValueConstant, Value IndexConstant) {
-        return new Value(LLVMConstInsertElement(VectorConstant.value(),
-                ElementValueConstant.value(), IndexConstant.value()));
+    public static Value constInsertElement(Value vectorConstant,
+            Value elementValueConstant, Value indexConstant) {
+        return new Value(LLVMConstInsertElement(vectorConstant.value(),
+                elementValueConstant.value(), indexConstant.value()));
     }
 
-    public static Value constShuffleVector(Value VectorAConstant,
-            Value VectorBConstant, Value MaskConstant) {
-        return new Value(LLVMConstShuffleVector(VectorAConstant.value(),
-                VectorBConstant.value(), MaskConstant.value()));
+    public static Value constShuffleVector(Value vectorAConstant,
+            Value vectorBConstant, Value maskConstant) {
+        return new Value(LLVMConstShuffleVector(vectorAConstant.value(),
+                vectorBConstant.value(), maskConstant.value()));
     }
 
-    public static Value constExtractValue(Value AggConstant,
-            Pointer<Integer> IdxList, int NumIdx) {
-        return new Value(LLVMConstExtractValue(AggConstant.value(), IdxList,
-                NumIdx));
+    public static Value constExtractValue(Value aggConstant,
+            Pointer<Integer> idxList, int numIdx) {
+        return new Value(LLVMConstExtractValue(aggConstant.value(), idxList,
+                numIdx));
     }
 
-    public static Value constInsertValue(Value AggConstant,
-            Value ElementValueConstant, Pointer<Integer> IdxList, int NumIdx) {
-        return new Value(LLVMConstInsertValue(AggConstant.value(),
-                ElementValueConstant.value(), IdxList, NumIdx));
+    public static Value constInsertValue(Value aggConstant,
+            Value elementValueConstant, Pointer<Integer> idxList, int numIdx) {
+        return new Value(LLVMConstInsertValue(aggConstant.value(),
+                elementValueConstant.value(), idxList, numIdx));
     }
 
-    public static Value constInlineAsm(TypeRef Ty, String AsmString,
-            String Constraints, boolean HasSideEffects, boolean IsAlignStack) {
-        return new Value(LLVMConstInlineAsm(Ty.type(),
-                Pointer.pointerToCString(AsmString),
-                Pointer.pointerToCString(Constraints), HasSideEffects ? 1 : 0,
-                IsAlignStack ? 1 : 0));
+    public static Value constInlineAsm(TypeRef ty, String asmString,
+            String constraints, boolean hasSideEffects, boolean isAlignStack) {
+        return new Value(LLVMConstInlineAsm(ty.type(),
+                Pointer.pointerToCString(asmString),
+                Pointer.pointerToCString(constraints), hasSideEffects ? 1 : 0,
+                isAlignStack ? 1 : 0));
     }
 
-    public static Value blockAddress(Value F, BasicBlock BB) {
-        return new Value(LLVMBlockAddress(F.value(), BB.bb()));
+    public static Value blockAddress(Value f, BasicBlock bb) {
+        return new Value(LLVMBlockAddress(f.value(), bb.bb()));
     }
 
     public Module getGlobalParent() {
@@ -846,32 +847,32 @@ public class Value {
         return LLVMGetLinkage(value);
     }
 
-    public void setLinkage(IntValuedEnum<LLVMLinkage> Linkage) {
-        LLVMSetLinkage(value, Linkage);
+    public void setLinkage(IntValuedEnum<LLVMLinkage> linkage) {
+        LLVMSetLinkage(value, linkage);
     }
 
     public String getSection() {
         return LLVMGetSection(value).getCString();
     }
 
-    public void setSection(String Section) {
-        LLVMSetSection(value, Pointer.pointerToCString(Section));
+    public void setSection(String section) {
+        LLVMSetSection(value, Pointer.pointerToCString(section));
     }
 
     public IntValuedEnum<LLVMVisibility> getVisibility() {
         return LLVMGetVisibility(value);
     }
 
-    public void setVisibility(IntValuedEnum<LLVMVisibility> Viz) {
-        LLVMSetVisibility(value, Viz);
+    public void setVisibility(IntValuedEnum<LLVMVisibility> viz) {
+        LLVMSetVisibility(value, viz);
     }
 
     public void getAlignment() {
         LLVMGetAlignment(value);
     }
 
-    public void setAlignment(int Bytes) {
-        LLVMSetAlignment(value, Bytes);
+    public void setAlignment(int bytes) {
+        LLVMSetAlignment(value, bytes);
     }
 
     // this.value is GlobalVar
@@ -892,24 +893,24 @@ public class Value {
         return new Value(LLVMGetInitializer(value));
     }
 
-    public void setInitializer(Value ConstantVal) {
-        LLVMSetInitializer(value, ConstantVal.value());
+    public void setInitializer(Value constantVal) {
+        LLVMSetInitializer(value, constantVal.value());
     }
 
     public boolean isThreadLocal() {
         return LLVMIsThreadLocal(value) != 0;
     }
 
-    public void setThreadLocal(boolean IsThreadLocal) {
-        LLVMSetThreadLocal(value, IsThreadLocal ? 1 : 0);
+    public void setThreadLocal(boolean isThreadLocal) {
+        LLVMSetThreadLocal(value, isThreadLocal ? 1 : 0);
     }
 
     public boolean isGlobalConstant() {
         return LLVMIsGlobalConstant(value) != 0;
     }
 
-    public void setGlobalConstant(boolean IsConstant) {
-        LLVMSetGlobalConstant(value, IsConstant ? 1 : 0);
+    public void setGlobalConstant(boolean isConstant) {
+        LLVMSetGlobalConstant(value, isConstant ? 1 : 0);
     }
 
     /**
@@ -962,11 +963,11 @@ public class Value {
      * Set the calling convention of a function.<br>
      *
      * @see llvm::Function::setCallingConv()<br>
-     * @param CC
+     * @param cc
      *            LLVMCallConv to set calling convention to
      */
-    public void setFunctionCallConv(int CC) {
-        LLVMSetFunctionCallConv(value, CC);
+    public void setFunctionCallConv(int cc) {
+        LLVMSetFunctionCallConv(value, cc);
     }
 
     /**
@@ -984,8 +985,8 @@ public class Value {
      *
      * @see llvm::Function::setGC()
      */
-    public void setGC(String Name) {
-        LLVMSetGC(value, Pointer.pointerToCString(Name));
+    public void setGC(String name) {
+        LLVMSetGC(value, Pointer.pointerToCString(name));
     }
 
     /**
@@ -993,8 +994,8 @@ public class Value {
      *
      * @see llvm::Function::addAttribute()
      */
-    public void addFunctionAttr(IntValuedEnum<LLVMAttribute> PA) {
-        LLVMAddFunctionAttr(value, PA);
+    public void addFunctionAttr(IntValuedEnum<LLVMAttribute> pa) {
+        LLVMAddFunctionAttr(value, pa);
     }
 
     /**
@@ -1009,8 +1010,8 @@ public class Value {
     /**
      * Remove an attribute from a function.
      */
-    public void removeFunctionAttr(IntValuedEnum<LLVMAttribute> PA) {
-        LLVMRemoveFunctionAttr(value, PA);
+    public void removeFunctionAttr(IntValuedEnum<LLVMAttribute> pa) {
+        LLVMRemoveFunctionAttr(value, pa);
     }
 
     /**
@@ -1032,8 +1033,8 @@ public class Value {
      *
      * @see llvm::Function::arg_begin()
      */
-    public void getParams(Pointer<LLVMValueRef> Params) {
-        LLVMGetParams(value, Params);
+    public void getParams(Pointer<LLVMValueRef> params) {
+        LLVMGetParams(value, params);
     }
 
     /**
@@ -1042,8 +1043,8 @@ public class Value {
      *
      * @see llvm::Function::arg_begin()
      */
-    public Value getParam(int Index) {
-        return new Value(LLVMGetParam(value, Index));
+    public Value getParam(int index) {
+        return new Value(LLVMGetParam(value, index));
     }
 
     /**
@@ -1098,8 +1099,8 @@ public class Value {
      *
      * @see llvm::Argument::addAttr()
      */
-    public void addAttribute(IntValuedEnum<LLVMAttribute> PA) {
-        LLVMAddAttribute(value, PA);
+    public void addAttribute(IntValuedEnum<LLVMAttribute> pa) {
+        LLVMAddAttribute(value, pa);
     }
 
     /**
@@ -1107,8 +1108,8 @@ public class Value {
      *
      * @see llvm::Argument::removeAttr()
      */
-    public void removeAttribute(IntValuedEnum<LLVMAttribute> PA) {
-        LLVMRemoveAttribute(value, PA);
+    public void removeAttribute(IntValuedEnum<LLVMAttribute> pa) {
+        LLVMRemoveAttribute(value, pa);
     }
 
     /**
@@ -1159,8 +1160,8 @@ public class Value {
      * LLVMCountBasicBlocks() in length. This array is populated with<br>
      * LLVMBasicBlockRef instances.
      */
-    public void getBasicBlocks(Pointer<LLVMBasicBlockRef> BasicBlocks) {
-        LLVMGetBasicBlocks(value, BasicBlocks);
+    public void getBasicBlocks(Pointer<LLVMBasicBlockRef> basicBlocks) {
+        LLVMGetBasicBlocks(value, basicBlocks);
     }
 
     /**
@@ -1198,9 +1199,9 @@ public class Value {
      *
      * @see llvm::BasicBlock::Create()
      */
-    public BasicBlock appendBasicBlockInContext(Context C, String Name) {
-        return new BasicBlock(LLVMAppendBasicBlockInContext(C.context(), value,
-                Pointer.pointerToCString(Name)));
+    public BasicBlock appendBasicBlockInContext(Context c, String name) {
+        return new BasicBlock(LLVMAppendBasicBlockInContext(c.context(), value,
+                Pointer.pointerToCString(name)));
     }
 
     /**
@@ -1209,9 +1210,9 @@ public class Value {
      *
      * @see llvm::BasicBlock::Create()
      */
-    public BasicBlock appendBasicBlock(String Name) {
+    public BasicBlock appendBasicBlock(String name) {
         return new BasicBlock(LLVMAppendBasicBlock(value,
-                Pointer.pointerToCString(Name)));
+                Pointer.pointerToCString(name)));
     }
 
     // Instruction
@@ -1231,7 +1232,7 @@ public class Value {
      * If this is the last instruction in a basic block, NULL will be<br>
      * returned.
      */
-    public Value getNextInstruction(Value Inst) {
+    public Value getNextInstruction(Value inst) {
         return new Value(LLVMGetNextInstruction(value));
     }
 
@@ -1240,7 +1241,7 @@ public class Value {
      * If the instruction is the first instruction in a basic block, NULL<br>
      * will be returned.
      */
-    public Value getPreviousInstruction(Value Inst) {
+    public Value getPreviousInstruction(Value inst) {
         return new Value(LLVMGetPreviousInstruction(value));
     }
 
@@ -1252,8 +1253,8 @@ public class Value {
      * @see llvm::CallInst::setCallingConv()<br>
      * @see llvm::InvokeInst::setCallingConv()
      */
-    public void setInstructionCallConv(int CC) {
-        LLVMSetInstructionCallConv(value, CC);
+    public void setInstructionCallConv(int cc) {
+        LLVMSetInstructionCallConv(value, cc);
     }
 
     /**
@@ -1297,8 +1298,8 @@ public class Value {
      *
      * @see llvm::CallInst::setTailCall()
      */
-    public void setTailCall(boolean IsTailCall) {
-        LLVMSetTailCall(value, IsTailCall ? 1 : 0);
+    public void setTailCall(boolean isTailCall) {
+        LLVMSetTailCall(value, isTailCall ? 1 : 0);
     }
 
     /**
@@ -1306,23 +1307,23 @@ public class Value {
      */
     /*public void AddIncoming(Pointer<LLVMValueRef> IncomingValues,
             Pointer<LLVMBasicBlockRef > IncomingBlocks, int Count) {*/
-    public void addIncoming(Value[] IncomingValues,
-            BasicBlock[] IncomingBlocks, int Count) {
+    public void addIncoming(Value[] incomingValues,
+            BasicBlock[] incomingBlocks, int count) {
 
-        LLVMValueRef[] rawVals = new LLVMValueRef[IncomingValues.length];
-        for (int i = 0; i < IncomingValues.length; i++) {
-            rawVals[i] = IncomingValues[i].value;
+        LLVMValueRef[] rawVals = new LLVMValueRef[incomingValues.length];
+        for (int i = 0; i < incomingValues.length; i++) {
+            rawVals[i] = incomingValues[i].value;
         }
         Pointer<LLVMValueRef> ptrVals = Pointer.pointerToArray(rawVals);
 
-        LLVMBasicBlockRef[] rawBlocks = new LLVMBasicBlockRef[IncomingBlocks.length];
-        for (int i = 0; i < IncomingBlocks.length; i++) {
-            rawBlocks[i] = IncomingBlocks[i].bb();
+        LLVMBasicBlockRef[] rawBlocks = new LLVMBasicBlockRef[incomingBlocks.length];
+        for (int i = 0; i < incomingBlocks.length; i++) {
+            rawBlocks[i] = incomingBlocks[i].bb();
         }
         Pointer<LLVMBasicBlockRef> ptrBlocks = Pointer
                 .pointerToArray(rawBlocks);
 
-        LLVMAddIncoming(value, ptrVals, ptrBlocks, Count);
+        LLVMAddIncoming(value, ptrVals, ptrBlocks, count);
     }
 
     /**
@@ -1335,15 +1336,15 @@ public class Value {
     /**
      * Obtain an incoming value to a PHI node as a LLVMValueRef.
      */
-    public Value getIncomingValue(int Index) {
-        return new Value(LLVMGetIncomingValue(value, Index));
+    public Value getIncomingValue(int index) {
+        return new Value(LLVMGetIncomingValue(value, index));
     }
 
     /**
      * Obtain an incoming value to a PHI node as a LLVMBasicBlockRef.
      */
-    public BasicBlock getIncomingBlock(int Index) {
-        return new BasicBlock(LLVMGetIncomingBlock(value, Index));
+    public BasicBlock getIncomingBlock(int index) {
+        return new BasicBlock(LLVMGetIncomingBlock(value, index));
     }
 
 }

@@ -6,7 +6,7 @@ public class PassManager {
 
     private LLVMPassManagerRef manager;
 
-    /*package*/LLVMPassManagerRef manager() {
+    LLVMPassManagerRef manager() {
         return manager;
     }
 
@@ -17,7 +17,7 @@ public class PassManager {
     /**
      * Constructs a new whole-module pass pipeline. This type of pipeline is<br>
      * suitable for link-time optimization and whole-module transformations.<br>
-     * 
+     *
      * @see llvm::PassManager::PassManager
      */
     public static PassManager create() {
@@ -28,19 +28,19 @@ public class PassManager {
      * Constructs a new function-by-function pass pipeline over the module<br>
      * provider. It does not take ownership of the module provider. This type of<br>
      * pipeline is suitable for code generation and JIT compilation tasks.<br>
-     * 
+     *
      * @see llvm::FunctionPassManager::FunctionPassManager
      */
-    public static PassManager createForModule(Module M) {
+    public static PassManager createForModule(Module m) {
         return new PassManager(
-                LLVMCreateFunctionPassManagerForModule(M.module()));
+                LLVMCreateFunctionPassManagerForModule(m.module()));
     }
 
     /**
      * Deprecated: Use LLVMCreateFunctionPassManagerForModule instead.
      */
-    public static PassManager createFPM(LLVMModuleProviderRef MP) {
-        return new PassManager(LLVMCreateFunctionPassManager(MP));
+    public static PassManager createFPM(LLVMModuleProviderRef mp) {
+        return new PassManager(LLVMCreateFunctionPassManager(mp));
     }
 
     public void finalize() {
@@ -65,12 +65,12 @@ public class PassManager {
     }
 
     /* PassManager */
-    // public static native int LLVMRunPassManager(LLVMPassManagerRef PM, LLVMModuleRef M);
+    // public static native int LLVMRunPassManager(LLVMPassManagerRef pm, LLVMModuleRef m);
 
     /**
      * Initializes all of the function passes scheduled in the function pass<br>
      * manager. Returns 1 if any of the passes modified the module, 0 otherwise.<br>
-     * 
+     *
      * @see llvm::FunctionPassManager::doInitialization
      */
     public void initialize() {
@@ -85,11 +85,11 @@ public class PassManager {
      * Initializes, executes on the provided module, and finalizes all of the<br>
      * passes scheduled in the pass manager. Returns 1 if any of the passes<br>
      * modified the module, 0 otherwise.<br>
-     * 
+     *
      * @see llvm::PassManager::run(Module&)
      */
-    public void runForModule(Module M) {
-        boolean err = LLVMRunPassManager(manager, M.module()) != 0;
+    public void runForModule(Module m) {
+        boolean err = LLVMRunPassManager(manager, m.module()) != 0;
         if (err) {
             throw new RuntimeException("error in LLVMRunPassManager");
         }
@@ -100,11 +100,11 @@ public class PassManager {
      * manager<br>
      * on the provided function. Returns 1 if any of the passes modified the<br>
      * function, false otherwise.<br>
-     * 
+     *
      * @see llvm::FunctionPassManager::run(Function&)
      */
-    public void runForFunction(Value F) {
-        boolean err = LLVMRunFunctionPassManager(manager, F.value()) != 0;
+    public void runForFunction(Value f) {
+        boolean err = LLVMRunFunctionPassManager(manager, f.value()) != 0;
         if (err) {
             throw new RuntimeException("error in LLVMRunFunctionPassManager");
         }
@@ -159,8 +159,8 @@ public class PassManager {
         LLVMAddIPSCCPPass(manager);
     }
 
-    public void addInternalizePass(boolean AllButMain) {
-        LLVMAddInternalizePass(AllButMain ? 1 : 0);
+    public void addInternalizePass(boolean allButMain) {
+        LLVMAddInternalizePass(allButMain ? 1 : 0);
     }
 
     /*public void addRaiseAllocationsPass() {
@@ -243,8 +243,8 @@ public class PassManager {
         LLVMAddScalarReplAggregatesPass(manager);
     }
 
-    public void addScalarReplAggregatesPassWithThreshold(int Threshold) {
-        LLVMAddScalarReplAggregatesPassWithThreshold(manager, Threshold);
+    public void addScalarReplAggregatesPassWithThreshold(int threshold) {
+        LLVMAddScalarReplAggregatesPassWithThreshold(manager, threshold);
     }
 
     public void addSimplifyLibCallsPass() {

@@ -11,7 +11,7 @@ import static org.llvm.binding.LLVMLibrary.*;
 public class BasicBlock {
     private LLVMBasicBlockRef bb;
 
-    /* package */LLVMBasicBlockRef bb() {
+    LLVMBasicBlockRef bb() {
         return bb;
     }
 
@@ -28,7 +28,7 @@ public class BasicBlock {
 
     /**
      * Obtain the function to which a basic block belongs.<br>
-     * 
+     *
      * @see llvm::BasicBlock::getParent()
      */
     public Value getBasicBlockParent() {
@@ -52,24 +52,24 @@ public class BasicBlock {
     /**
      * Insert a new basic block before this basic block, and return it.
      */
-    public BasicBlock insertBasicBlock(String Name) {
+    public BasicBlock insertBasicBlock(String name) {
         return new BasicBlock(LLVMInsertBasicBlock(bb,
-                Pointer.pointerToCString(Name)));
+                Pointer.pointerToCString(name)));
     }
 
     /**
      * Insert a new basic block before this basic block, and return it
      */
-    public BasicBlock InsertBasicBlockInContext(Context C, String Name) {
-        return new BasicBlock(LLVMInsertBasicBlockInContext(C.context(), bb,
-                Pointer.pointerToCString(Name)));
+    public BasicBlock InsertBasicBlockInContext(Context c, String name) {
+        return new BasicBlock(LLVMInsertBasicBlockInContext(c.context(), bb,
+                Pointer.pointerToCString(name)));
     }
 
     /**
      * Remove a basic block from a function and delete it.<br>
      * This deletes the basic block from its containing function and deletes<br>
      * the basic block itself.<br>
-     * 
+     *
      * @see llvm::BasicBlock::eraseFromParent()
      */
     public void deleteBasicBlock() {
@@ -78,20 +78,20 @@ public class BasicBlock {
 
     /**
      * Move a basic block to before another one.<br>
-     * 
+     *
      * @see llvm::BasicBlock::moveBefore()
      */
-    public void moveBasicBlockBefore(BasicBlock MovePos) {
-        LLVMMoveBasicBlockBefore(bb, MovePos.bb());
+    public void moveBasicBlockBefore(BasicBlock movePos) {
+        LLVMMoveBasicBlockBefore(bb, movePos.bb());
     }
 
     /**
      * Move a basic block to after another one.<br>
-     * 
+     *
      * @see llvm::BasicBlock::moveAfter()
      */
-    public void moveBasicBlockAfter(BasicBlock MovePos) {
-        LLVMMoveBasicBlockAfter(bb, MovePos.bb());
+    public void moveBasicBlockAfter(BasicBlock movePos) {
+        LLVMMoveBasicBlockAfter(bb, movePos.bb());
     }
 
     /**

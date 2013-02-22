@@ -16,7 +16,7 @@ public class GenericValue {
         this.ref = ref;
     }
 
-    //public static native void LLVMDisposeGenericValue(LLVMLibrary.LLVMGenericValueRef GenVal);
+    //public static native void LLVMDisposeGenericValue(LLVMLibrary.LLVMGenericValueRef genVal);
     public void dispose() {
         if (ref != null) {
             LLVMLibrary.LLVMDisposeGenericValue(ref);
@@ -28,38 +28,38 @@ public class GenericValue {
         dispose();
     }
 
-    //public static native LLVMLibrary.LLVMGenericValueRef LLVMCreateGenericValueOfInt(LLVMLibrary.LLVMTypeRef Ty, long N, int IsSigned);
+    //public static native LLVMLibrary.LLVMGenericValueRef LLVMCreateGenericValueOfInt(LLVMLibrary.LLVMTypeRef ty, long n, int isSigned);
     public static GenericValue createInt(TypeRef ty, long N, boolean isSigned) {
         return new GenericValue(LLVMCreateGenericValueOfInt(ty.type(), N,
                 isSigned ? 1 : 0));
     }
 
-    //public static native LLVMLibrary.LLVMGenericValueRef LLVMCreateGenericValueOfPointer(Pointer<? > P);
-    public static GenericValue createPtr(Pointer<?> P) {
-        return new GenericValue(LLVMCreateGenericValueOfPointer(P));
+    //public static native LLVMLibrary.LLVMGenericValueRef LLVMCreateGenericValueOfPointer(Pointer<? > p);
+    public static GenericValue createPtr(Pointer<?> p) {
+        return new GenericValue(LLVMCreateGenericValueOfPointer(p));
     }
 
-    //public static native LLVMLibrary.LLVMGenericValueRef LLVMCreateGenericValueOfFloat(LLVMLibrary.LLVMTypeRef Ty, double N);
-    public static GenericValue createFloat(TypeRef ty, double N) {
-        return new GenericValue(LLVMCreateGenericValueOfFloat(ty.type(), N));
+    //public static native LLVMLibrary.LLVMGenericValueRef LLVMCreateGenericValueOfFloat(LLVMLibrary.LLVMTypeRef ty, double n);
+    public static GenericValue createFloat(TypeRef ty, double n) {
+        return new GenericValue(LLVMCreateGenericValueOfFloat(ty.type(), n));
     }
 
-    //public static native int LLVMGenericValueIntWidth(LLVMLibrary.LLVMGenericValueRef GenValRef);
+    //public static native int LLVMGenericValueIntWidth(LLVMLibrary.LLVMGenericValueRef genValRef);
     public int intWidth() {
         return LLVMGenericValueIntWidth(ref);
     }
 
-    //public static native long LLVMGenericValueToInt(LLVMLibrary.LLVMGenericValueRef GenVal, int IsSigned);
+    //public static native long LLVMGenericValueToInt(LLVMLibrary.LLVMGenericValueRef genVal, int isSigned);
     public long toInt(boolean isSigned) {
         return LLVMGenericValueToInt(ref, isSigned ? 1 : 0);
     }
 
-    //public static native Pointer<? > LLVMGenericValueToPointer(LLVMLibrary.LLVMGenericValueRef GenVal);
+    //public static native Pointer<? > LLVMGenericValueToPointer(LLVMLibrary.LLVMGenericValueRef genVal);
     public Pointer<?> toPointer() {
         return LLVMGenericValueToPointer(ref);
     }
 
-    //public static native double LLVMGenericValueToFloat(LLVMLibrary.LLVMTypeRef TyRef, LLVMLibrary.LLVMGenericValueRef GenVal);
+    //public static native double LLVMGenericValueToFloat(LLVMLibrary.LLVMTypeRef tyRef, LLVMLibrary.LLVMGenericValueRef genVal);
     public double toFloat(TypeRef ty) {
         return LLVMGenericValueToFloat(ty.type(), ref);
     }

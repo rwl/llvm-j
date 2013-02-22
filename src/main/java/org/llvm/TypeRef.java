@@ -23,6 +23,7 @@ import static org.llvm.binding.LLVMLibrary.LLVMFloatTypeInContext;
 import static org.llvm.binding.LLVMLibrary.LLVMFunctionType;
 import static org.llvm.binding.LLVMLibrary.LLVMGetArrayLength;
 import static org.llvm.binding.LLVMLibrary.LLVMGetElementType;
+import static org.llvm.binding.LLVMLibrary.LLVMGetGlobalContext;
 import static org.llvm.binding.LLVMLibrary.LLVMGetIntTypeWidth;
 import static org.llvm.binding.LLVMLibrary.LLVMGetParamTypes;
 import static org.llvm.binding.LLVMLibrary.LLVMGetPointerAddressSpace;
@@ -52,6 +53,7 @@ import static org.llvm.binding.LLVMLibrary.LLVMPPCFP128Type;
 import static org.llvm.binding.LLVMLibrary.LLVMPPCFP128TypeInContext;
 import static org.llvm.binding.LLVMLibrary.LLVMPointerType;
 import static org.llvm.binding.LLVMLibrary.LLVMSizeOf;
+import static org.llvm.binding.LLVMLibrary.LLVMStructCreateNamed;
 import static org.llvm.binding.LLVMLibrary.LLVMStructType;
 import static org.llvm.binding.LLVMLibrary.LLVMStructTypeInContext;
 import static org.llvm.binding.LLVMLibrary.LLVMVectorType;
@@ -61,13 +63,9 @@ import static org.llvm.binding.LLVMLibrary.LLVMX86FP80Type;
 import static org.llvm.binding.LLVMLibrary.LLVMX86FP80TypeInContext;
 import static org.llvm.binding.LLVMLibrary.LLVMX86MMXType;
 import static org.llvm.binding.LLVMLibrary.LLVMX86MMXTypeInContext;
-import static org.llvm.binding.LLVMLibrary.LLVMStructCreateNamed;
-import static org.llvm.binding.LLVMLibrary.LLVMGetGlobalContext;
 
-import java.sql.Types;
-
-import org.bridj.Pointer;
 import org.bridj.IntValuedEnum;
+import org.bridj.Pointer;
 import org.llvm.binding.LLVMLibrary.LLVMTypeKind;
 import org.llvm.binding.LLVMLibrary.LLVMTypeRef;
 
@@ -107,28 +105,28 @@ public class TypeRef {
     /**
      * Obtain an integer type from a context with specified bit width.
      */
-    public static TypeRef int1TypeInContext(Context C) {
-        return new TypeRef(LLVMInt1TypeInContext(C.context()));
+    public static TypeRef int1TypeInContext(Context c) {
+        return new TypeRef(LLVMInt1TypeInContext(c.context()));
     }
 
-    public static TypeRef int8TypeInContext(Context C) {
-        return new TypeRef(LLVMInt8TypeInContext(C.context()));
+    public static TypeRef int8TypeInContext(Context c) {
+        return new TypeRef(LLVMInt8TypeInContext(c.context()));
     }
 
-    public static TypeRef int16TypeInContext(Context C) {
-        return new TypeRef(LLVMInt16TypeInContext(C.context()));
+    public static TypeRef int16TypeInContext(Context c) {
+        return new TypeRef(LLVMInt16TypeInContext(c.context()));
     }
 
-    public static TypeRef int32TypeInContext(Context C) {
-        return new TypeRef(LLVMInt32TypeInContext(C.context()));
+    public static TypeRef int32TypeInContext(Context c) {
+        return new TypeRef(LLVMInt32TypeInContext(c.context()));
     }
 
-    public static TypeRef int64TypeInContext(Context C) {
-        return new TypeRef(LLVMInt64TypeInContext(C.context()));
+    public static TypeRef int64TypeInContext(Context c) {
+        return new TypeRef(LLVMInt64TypeInContext(c.context()));
     }
 
-    public static TypeRef intTypeInContext(Context C, int NumBits) {
-        return new TypeRef(LLVMIntTypeInContext(C.context(), NumBits));
+    public static TypeRef intTypeInContext(Context c, int NumBits) {
+        return new TypeRef(LLVMIntTypeInContext(c.context(), NumBits));
     }
 
     /**
@@ -166,37 +164,37 @@ public class TypeRef {
     /**
      * Obtain a 32-bit floating point type from a context.
      */
-    public static TypeRef floatTypeInContext(Context C) {
-        return new TypeRef(LLVMFloatTypeInContext(C.context()));
+    public static TypeRef floatTypeInContext(Context c) {
+        return new TypeRef(LLVMFloatTypeInContext(c.context()));
     }
 
     /**
      * Obtain a 64-bit floating point type from a context.
      */
-    public static TypeRef doubleTypeInContext(Context C) {
-        return new TypeRef(LLVMDoubleTypeInContext(C.context()));
+    public static TypeRef doubleTypeInContext(Context c) {
+        return new TypeRef(LLVMDoubleTypeInContext(c.context()));
     }
 
     /**
      * Obtain a 80-bit floating point type (X87) from a context.
      */
-    public static TypeRef x86FP80TypeInContext(Context C) {
-        return new TypeRef(LLVMX86FP80TypeInContext(C.context()));
+    public static TypeRef x86FP80TypeInContext(Context c) {
+        return new TypeRef(LLVMX86FP80TypeInContext(c.context()));
     }
 
     /**
      * Obtain a 128-bit floating point type (112-bit mantissa) from a<br>
      * context.
      */
-    public static TypeRef FP128TypeInContext(Context C) {
-        return new TypeRef(LLVMFP128TypeInContext(C.context()));
+    public static TypeRef FP128TypeInContext(Context c) {
+        return new TypeRef(LLVMFP128TypeInContext(c.context()));
     }
 
     /**
      * Obtain a 128-bit floating point type (two 64-bits) from a context.
      */
-    public static TypeRef PPCFP128TypeInContext(Context C) {
-        return new TypeRef(LLVMPPCFP128TypeInContext(C.context()));
+    public static TypeRef PPCFP128TypeInContext(Context c) {
+        return new TypeRef(LLVMPPCFP128TypeInContext(c.context()));
     }
 
     public static TypeRef floatType() {
@@ -224,26 +222,26 @@ public class TypeRef {
      * The function is defined as a tuple of a return Type, a list of<br>
      * parameter types, and whether the function is variadic.
      */
-    public static TypeRef functionType(LLVMTypeRef ReturnType,
-            Pointer<LLVMTypeRef> ParamTypes, int ParamCount, int IsVarArg) {
-        return new TypeRef(LLVMFunctionType(ReturnType, ParamTypes, ParamCount,
-                IsVarArg));
+    public static TypeRef functionType(LLVMTypeRef returnType,
+            Pointer<LLVMTypeRef> paramTypes, int paramCount, int isVarArg) {
+        return new TypeRef(LLVMFunctionType(returnType, paramTypes, paramCount,
+                isVarArg));
     }
 
-    public static TypeRef functionType(TypeRef ReturnType,
-            TypeRef... ParamTypes) {
-        int N = ParamTypes.length;
+    public static TypeRef functionType(TypeRef returnType,
+            TypeRef... paramTypes) {
+        int N = paramTypes.length;
         LLVMTypeRef[] inner = new LLVMTypeRef[N];
         for (int i = 0; i < N; i++) {
-            inner[i] = ParamTypes[i].type;
+            inner[i] = paramTypes[i].type;
         }
 
         Pointer<LLVMTypeRef> array = Pointer.allocateTypedPointers(
-                LLVMTypeRef.class, ParamTypes.length);
+                LLVMTypeRef.class, paramTypes.length);
         array.setArray(inner);
 
-        return new TypeRef(LLVMFunctionType(ReturnType.type, array,
-                ParamTypes.length, 0));
+        return new TypeRef(LLVMFunctionType(returnType.type, array,
+                paramTypes.length, 0));
     }
 
     /**
@@ -274,11 +272,11 @@ public class TypeRef {
      * first LLVMCountParamTypes() entries in the array will be populated<br>
      * with LLVMTypeRef instances.<br>
      *
-     * @param Dest
+     * @param dest
      *            Memory address of an array to be filled with result.
      */
-    public void getParamTypes(Pointer<LLVMTypeRef> Dest) {
-        LLVMGetParamTypes(type, Dest);
+    public void getParamTypes(Pointer<LLVMTypeRef> dest) {
+        LLVMGetParamTypes(type, dest);
     }
 
     /**
@@ -288,10 +286,10 @@ public class TypeRef {
      *
      * @see llvm::StructType::create()
      */
-    public static TypeRef structTypeInContext(Context C,
-            Pointer<LLVMTypeRef> ElementTypes, int ElementCount, boolean Packed) {
-        return new TypeRef(LLVMStructTypeInContext(C.context(), ElementTypes,
-                ElementCount, Packed ? 1 : 0));
+    public static TypeRef structTypeInContext(Context c,
+            Pointer<LLVMTypeRef> elementTypes, int elementCount, boolean packed) {
+        return new TypeRef(LLVMStructTypeInContext(c.context(), elementTypes,
+                elementCount, packed ? 1 : 0));
     }
 
     /**
@@ -356,8 +354,8 @@ public class TypeRef {
      * of the structure type itself, which is the lifetime of the context it<br>
      * is contained in.
      */
-    public void getStructElementTypes(Pointer<LLVMTypeRef> Dest) {
-        LLVMGetStructElementTypes(type, Dest);
+    public void getStructElementTypes(Pointer<LLVMTypeRef> dest) {
+        LLVMGetStructElementTypes(type, dest);
     }
 
     /**
@@ -376,8 +374,8 @@ public class TypeRef {
      *
      * @see llvm::ArrayType::get()
      */
-    public TypeRef arrayType(int ElementCount) {
-        return new TypeRef(LLVMArrayType(type, ElementCount));
+    public TypeRef arrayType(int elementCount) {
+        return new TypeRef(LLVMArrayType(type, elementCount));
     }
 
     /**
@@ -387,8 +385,8 @@ public class TypeRef {
      *
      * @see llvm::PointerType::get()
      */
-    public TypeRef pointerType(int AddressSpace) {
-        return new TypeRef(LLVMPointerType(type, AddressSpace));
+    public TypeRef pointerType(int addressSpace) {
+        return new TypeRef(LLVMPointerType(type, addressSpace));
     }
 
     /**
@@ -399,8 +397,8 @@ public class TypeRef {
      *
      * @see llvm::VectorType::get()
      */
-    public TypeRef vectorType(int ElementCount) {
-        return new TypeRef(LLVMVectorType(type, ElementCount));
+    public TypeRef vectorType(int elementCount) {
+        return new TypeRef(LLVMVectorType(type, elementCount));
     }
 
     /**
@@ -525,7 +523,7 @@ public class TypeRef {
      *
      * @see llvm::UndefValue::get()
      */
-    public Value GetUndef() {
+    public Value getUndef() {
         return new Value(LLVMGetUndef(type));
     }
 
@@ -534,13 +532,13 @@ public class TypeRef {
      * The returned value corresponds to a llvm::ConstantInt.<br>
      *
      * @see llvm::ConstantInt::get()<br>
-     * @param N
+     * @param n
      *            The value the returned instance should refer to.<br>
-     * @param SignExtend
+     * @param signExtend
      *            Whether to sign extend the produced value.
      */
-    public Value constInt(long N, boolean SignExtend) {
-        return new Value(LLVMConstInt(type, N, SignExtend ? 1 : 0));
+    public Value constInt(long n, boolean signExtend) {
+        return new Value(LLVMConstInt(type, n, signExtend ? 1 : 0));
     }
 
     /**
