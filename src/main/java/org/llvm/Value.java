@@ -518,17 +518,8 @@ public class Value {
      * Create a non-packed constant structure in the global context.
      */
     public static Value constStruct(Value... constantVals) {
-        int n = constantVals.length;
-        LLVMValueRef[] inner = new LLVMValueRef[n];
-        for (int i = 0; i < n; i++) {
-            inner[i] = constantVals[i].value;
-        }
-
-        Pointer<LLVMValueRef> array = Pointer.allocateTypedPointers(
-                LLVMValueRef.class, constantVals.length);
-        array.setArray(inner);
-
-        return new Value(LLVMConstStruct(array, n, 0));
+        return new Value(LLVMConstStruct(internalize(constantVals),
+                constantVals.length, 0));
     }
 
     /**
@@ -710,18 +701,8 @@ public class Value {
 
     public static Value constInBoundsGEP(Value constantVal,
             Value... constantIndices) {
-        int n = constantIndices.length;
-        LLVMValueRef[] inner = new LLVMValueRef[n];
-        for (int i = 0; i < n; i++) {
-            inner[i] = constantIndices[i].value;
-        }
-
-        Pointer<LLVMValueRef> array = Pointer.allocateTypedPointers(
-                LLVMValueRef.class, constantIndices.length);
-        array.setArray(inner);
-
         return new Value(LLVMConstInBoundsGEP(constantVal.value(),
-                array, n));
+                internalize(constantIndices), constantIndices.length));
     }
 
     public static Value constTrunc(Value constantVal, TypeRef toType) {
@@ -981,8 +962,8 @@ public class Value {
      * @param cc
      *            LLVMCallConv to set calling convention to
      */
-    public void setFunctionCallConv(int cc) {
-        LLVMSetFunctionCallConv(value, cc);
+    public void setFunctionCallConv(LLVMCallConv cc) {
+        LLVMSetFunctionCallConv(value, (int) cc.value());
     }
 
     /**
@@ -1360,6 +1341,20 @@ public class Value {
      */
     public BasicBlock getIncomingBlock(int index) {
         return new BasicBlock(LLVMGetIncomingBlock(value, index));
+    }
+
+    static Pointer<LLVMValueRef> internalize(Value[] values) {
+        int n = values.length;
+        LLVMValueRef[] inner = new LLVMValueRef[n];
+        for (int i = 0; i < n; i++) {
+            inner[i] = values[i].value;
+        }
+
+        Pointer<LLVMValueRef> array = Pointer.allocateTypedPointers(
+                LLVMValueRef.class, values.length);
+        array.setArray(inner);
+
+        return array;
     }
 
 }

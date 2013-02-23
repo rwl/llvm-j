@@ -108,9 +108,18 @@ public class Builder {
         return new Value(LLVMBuildBr(builder, dest));
     }
 
+    public Value buildBr(BasicBlock dest) {
+        return new Value(LLVMBuildBr(builder, dest.bb()));
+    }
+
     public Value buildCondBr(Value if_, LLVMBasicBlockRef then,
             LLVMBasicBlockRef else_) {
         return new Value(LLVMBuildCondBr(builder, if_.value(), then, else_));
+    }
+
+    public Value buildCondBr(Value if_, BasicBlock then,
+            BasicBlock else_) {
+        return new Value(LLVMBuildCondBr(builder, if_.value(), then.bb(), else_.bb()));
     }
 
     public Value buildSwitch(Value v, LLVMBasicBlockRef else_, int numCases) {
@@ -353,18 +362,9 @@ public class Builder {
     }
 
     public Value buildInBoundsGEP(Value ptr, String name, Value... indices) {
-        int n = indices.length;
-        LLVMValueRef[] inner = new LLVMValueRef[n];
-        for (int i = 0; i < n; i++) {
-            inner[i] = indices[i].value();
-        }
-
-        Pointer<LLVMValueRef> array = Pointer.allocateTypedPointers(
-                LLVMValueRef.class, indices.length);
-        array.setArray(inner);
-
-        return new Value(LLVMBuildInBoundsGEP(builder, ptr.value(), array,
-                n, Pointer.pointerToCString(name)));
+        return new Value(LLVMBuildInBoundsGEP(builder, ptr.value(),
+                Value.internalize(indices), indices.length,
+                Pointer.pointerToCString(name)));
     }
 
     public Value buildStructGEP(Value ptr, int idx, String name) {
@@ -498,10 +498,20 @@ public class Builder {
                 Pointer.pointerToCString(name)));
     }
 
+    public Value buildPhi(TypeRef ty, String name) {
+        return new Value(LLVMBuildPhi(builder, ty.type(),
+                Pointer.pointerToCString(name)));
+    }
+
     public Value buildCall(Value fn, Pointer<LLVMValueRef> args, int numArgs,
             String name) {
         return new Value(LLVMBuildCall(builder, fn.value(), args, numArgs,
                 Pointer.pointerToCString(name)));
+    }
+
+    public Value buildCall(Value fn, Value[] args, String name) {
+        return new Value(LLVMBuildCall(builder, fn.value(), Value.internalize(args),
+                args.length, Pointer.pointerToCString(name)));
     }
 
     public Value buildSelect(Value if_, Value then, Value else_, String name) {

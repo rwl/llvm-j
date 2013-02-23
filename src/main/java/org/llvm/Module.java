@@ -1,5 +1,6 @@
 package org.llvm;
 
+import org.bridj.IntValuedEnum;
 import org.bridj.Pointer;
 
 import static org.llvm.binding.LLVMLibrary.*;
@@ -53,6 +54,16 @@ public class Module {
     public void dispose() {
         LLVMDisposeModule(module);
         module = null;
+    }
+
+    /**
+     * Verifies that a module is valid, taking the specified action if not.<br>
+     * Optionally returns a human-readable description of any invalid constructs.<br>
+     * OutMessage must be disposed with LLVMDisposeMessage.
+     */
+    public int verifyModule(IntValuedEnum<LLVMVerifierFailureAction> action,
+            Pointer<Pointer<Byte>> outMessage) {
+        return LLVMVerifyModule(module, action, outMessage);
     }
 
     /**

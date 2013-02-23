@@ -231,18 +231,8 @@ public class TypeRef {
 
     public static TypeRef functionType(TypeRef returnType,
             TypeRef... paramTypes) {
-        int N = paramTypes.length;
-        LLVMTypeRef[] inner = new LLVMTypeRef[N];
-        for (int i = 0; i < N; i++) {
-            inner[i] = paramTypes[i].type;
-        }
-
-        Pointer<LLVMTypeRef> array = Pointer.allocateTypedPointers(
-                LLVMTypeRef.class, paramTypes.length);
-        array.setArray(inner);
-
-        return new TypeRef(LLVMFunctionType(returnType.type, array,
-                paramTypes.length, 0));
+        return new TypeRef(LLVMFunctionType(returnType.type,
+                internalize(paramTypes), paramTypes.length, 0));
     }
 
     /**
@@ -308,17 +298,8 @@ public class TypeRef {
      * Create a new non-packed structure type in the global context.
      */
     public static TypeRef structType(TypeRef... elementTypes) {
-        int n = elementTypes.length;
-        LLVMTypeRef[] inner = new LLVMTypeRef[n];
-        for (int i = 0; i < n; i++) {
-            inner[i] = elementTypes[i].type;
-        }
-
-        Pointer<LLVMTypeRef> array = Pointer.allocateTypedPointers(
-                LLVMTypeRef.class, elementTypes.length);
-        array.setArray(inner);
-
-        return new TypeRef(LLVMStructType(array, n, 0));
+        return new TypeRef(LLVMStructType(internalize(elementTypes),
+                elementTypes.length, 0));
     }
 
     /**
@@ -628,6 +609,20 @@ public class TypeRef {
 
     public Value sizeOf(TypeRef ty) {
         return new Value(LLVMSizeOf(type));
+    }
+
+    static Pointer<LLVMTypeRef> internalize(TypeRef[] types) {
+        int n = types.length;
+        LLVMTypeRef[] inner = new LLVMTypeRef[n];
+        for (int i = 0; i < n; i++) {
+            inner[i] = types[i].type;
+        }
+
+        Pointer<LLVMTypeRef> array = Pointer.allocateTypedPointers(
+                LLVMTypeRef.class, types.length);
+        array.setArray(inner);
+
+        return array;
     }
 
 }

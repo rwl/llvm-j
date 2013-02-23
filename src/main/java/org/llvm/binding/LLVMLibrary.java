@@ -459,6 +459,35 @@ public class LLVMLibrary {
     };
 
     /// enum values
+    public enum LLVMVerifierFailureAction implements
+            IntValuedEnum<LLVMVerifierFailureAction> {
+        /// verifier will print to stderr and abort()
+        LLVMAbortProcessAction(0),
+        /// verifier will print to stderr and return 1
+        LLVMPrintMessageAction(1),
+        /// verifier will just return 1
+        LLVMReturnStatusAction(2);
+        LLVMVerifierFailureAction(long value) {
+            this.value = value;
+        }
+
+        public final long value;
+
+        public long value() {
+            return this.value;
+        }
+
+        public Iterator<LLVMVerifierFailureAction> iterator() {
+            return Collections.singleton(this).iterator();
+        }
+
+        public static IntValuedEnum<LLVMVerifierFailureAction> fromValue(
+                int value) {
+            return FlagSet.fromValue(value, values());
+        }
+    };
+
+    /// enum values
     public enum LLVMByteOrdering implements IntValuedEnum<LLVMByteOrdering> {
         LLVMBigEndian(0), LLVMLittleEndian(1);
         LLVMByteOrdering(long value) {
@@ -7087,6 +7116,56 @@ public class LLVMLibrary {
     }
 
     protected native static void LLVMDisposePassManager(@Ptr long PM);
+
+    /**
+     * Verifies that a module is valid, taking the specified action if not.<br>
+     * Optionally returns a human-readable description of any invalid
+     * constructs.<br>
+     * OutMessage must be disposed with LLVMDisposeMessage.<br>
+     * Original signature :
+     * <code>LLVMBool LLVMVerifyModule(LLVMModuleRef, LLVMVerifierFailureAction, char**)</code>
+     */
+    public static int LLVMVerifyModule(LLVMLibrary.LLVMModuleRef M,
+            IntValuedEnum<LLVMLibrary.LLVMVerifierFailureAction> Action,
+            Pointer<Pointer<Byte>> OutMessage) {
+        return LLVMVerifyModule(Pointer.getPeer(M), (int) Action.value(),
+                Pointer.getPeer(OutMessage));
+    }
+
+    protected native static int LLVMVerifyModule(@Ptr long M, int Action,
+            @Ptr long OutMessage);
+
+    /**
+     * Verifies that a single function is valid, taking the specified action.
+     * Useful<br>
+     * for debugging.<br>
+     * Original signature :
+     * <code>LLVMBool LLVMVerifyFunction(LLVMValueRef, LLVMVerifierFailureAction)</code>
+     */
+    public static int LLVMVerifyFunction(LLVMLibrary.LLVMValueRef Fn,
+            IntValuedEnum<LLVMLibrary.LLVMVerifierFailureAction> Action) {
+        return LLVMVerifyFunction(Pointer.getPeer(Fn), (int) Action.value());
+    }
+
+    protected native static int LLVMVerifyFunction(@Ptr long Fn, int Action);
+
+    /**
+     * Open up a ghostview window that displays the CFG of the current function.<br>
+     * Useful for debugging.<br>
+     * Original signature : <code>void LLVMViewFunctionCFG(LLVMValueRef)</code>
+     */
+    public static void LLVMViewFunctionCFG(LLVMLibrary.LLVMValueRef Fn) {
+        LLVMViewFunctionCFG(Pointer.getPeer(Fn));
+    }
+
+    protected native static void LLVMViewFunctionCFG(@Ptr long Fn);
+
+    /// Original signature : <code>void LLVMViewFunctionCFGOnly(LLVMValueRef)</code>
+    public static void LLVMViewFunctionCFGOnly(LLVMLibrary.LLVMValueRef Fn) {
+        LLVMViewFunctionCFGOnly(Pointer.getPeer(Fn));
+    }
+
+    protected native static void LLVMViewFunctionCFGOnly(@Ptr long Fn);
 
     /**
      * Writes a module to the specified path. Returns 0 on success.<br>

@@ -1,5 +1,7 @@
 package org.llvm;
 
+import java.io.PrintStream;
+
 import org.bridj.Pointer;
 
 import static org.llvm.binding.LLVMLibrary.*;
@@ -64,6 +66,10 @@ public class ExecutionEngine {
             LLVMModuleProviderRef mp, int optLevel,
             Pointer<Pointer<Byte>> outError);*/
 
+    public int CreateJITCompilerForModule(Module m, int optLevel, PrintStream outError) {
+        return 0;//FIXME LLVMCreateJITCompilerForModule(engine, m, optLevel, outError);
+    }
+
     public void runStaticConstructors() {
         LLVMRunStaticConstructors(engine);
     }
@@ -79,17 +85,9 @@ public class ExecutionEngine {
 
     public GenericValue runFunction(Value f, GenericValue... args) {
         // Pointer<Pointer<LLVMOpaqueGenericValue>> args) {
-        int n = args.length;
-        LLVMGenericValueRef[] inner = new LLVMGenericValueRef[n];
-        for (int i = 0; i < n; i++) {
-            inner[i] = args[i].ref();
-        } // .value(); }
 
-        Pointer<LLVMGenericValueRef> array = Pointer.allocateTypedPointers(
-                LLVMGenericValueRef.class, n);
-        array.setArray(inner);
-
-        return new GenericValue(LLVMRunFunction(engine, f.value(), n, array));
+        return new GenericValue(LLVMRunFunction(engine, f.value(),
+                args.length, internalize(args)));
     }
 
     public void freeMachineCodeForFunction(Value f) {
@@ -152,12 +150,30 @@ public class ExecutionEngine {
         return LLVMGetExecutionEngineTargetData(engine);
     }
 
+    public void addTargetData(PassManager manager) {
+        LLVMAddTargetData(getExecutionEngineTargetData(), manager.manager());
+    }
+
     public void addGlobalMapping(Value global, Pointer<?> addr) {
         LLVMAddGlobalMapping(engine, global.value(), addr);
     }
 
     public Pointer<?> getPointerToGlobal(Value global) {
         return LLVMGetPointerToGlobal(engine, global.value());
+    }
+
+    static Pointer<LLVMGenericValueRef> internalize(GenericValue[] values) {
+        int n = values.length;
+        LLVMGenericValueRef[] inner = new LLVMGenericValueRef[n];
+        for (int i = 0; i < n; i++) {
+            inner[i] = values[i].ref();
+        }
+
+        Pointer<LLVMGenericValueRef> array = Pointer.allocateTypedPointers(
+                LLVMGenericValueRef.class, n);
+        array.setArray(inner);
+
+        return array;
     }
 
 }

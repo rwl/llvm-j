@@ -10,6 +10,9 @@ import org.llvm.Value;
 
 import junit.framework.TestCase;
 
+/**
+ * http://www.mdevan.org/llvm-py/examples.html
+ */
 public class TestJIT extends TestCase {
 
     public void testSimpleFn() {
