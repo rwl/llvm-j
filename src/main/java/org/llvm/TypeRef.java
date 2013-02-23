@@ -63,6 +63,7 @@ import static org.llvm.binding.LLVMLibrary.LLVMX86FP80Type;
 import static org.llvm.binding.LLVMLibrary.LLVMX86FP80TypeInContext;
 import static org.llvm.binding.LLVMLibrary.LLVMX86MMXType;
 import static org.llvm.binding.LLVMLibrary.LLVMX86MMXTypeInContext;
+import static org.llvm.binding.LLVMLibrary.LLVMIsOpaqueStruct;
 
 import org.bridj.IntValuedEnum;
 import org.bridj.Pointer;
@@ -368,6 +369,15 @@ public class TypeRef {
     }
 
     /**
+     * Determine whether a structure is opaque.<br>
+     *
+     * @see llvm::StructType::isOpaque()<br>
+     */
+    public boolean isOpaqueStruct() {
+        return LLVMIsOpaqueStruct(type) != 0;
+    }
+
+    /**
      * Create a fixed size array type that refers to a specific type.<br>
      * The created type will exist in the context that its element type<br>
      * exists in.<br>
@@ -387,6 +397,17 @@ public class TypeRef {
      */
     public TypeRef pointerType(int addressSpace) {
         return new TypeRef(LLVMPointerType(type, addressSpace));
+    }
+
+    /**
+     * Create a pointer type that points to a defined type.<br>
+     * The created type will exist in the context that its pointee type<br>
+     * exists in and the default address space (0).<br>
+     *
+     * @see llvm::PointerType::get()
+     */
+    public TypeRef pointerType() {
+        return new TypeRef(LLVMPointerType(type, 0));
     }
 
     /**

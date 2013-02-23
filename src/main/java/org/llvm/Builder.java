@@ -352,6 +352,21 @@ public class Builder {
                 numIndices, Pointer.pointerToCString(name)));
     }
 
+    public Value buildInBoundsGEP(Value ptr, String name, Value... indices) {
+        int n = indices.length;
+        LLVMValueRef[] inner = new LLVMValueRef[n];
+        for (int i = 0; i < n; i++) {
+            inner[i] = indices[i].value();
+        }
+
+        Pointer<LLVMValueRef> array = Pointer.allocateTypedPointers(
+                LLVMValueRef.class, indices.length);
+        array.setArray(inner);
+
+        return new Value(LLVMBuildInBoundsGEP(builder, ptr.value(), array,
+                n, Pointer.pointerToCString(name)));
+    }
+
     public Value buildStructGEP(Value ptr, int idx, String name) {
         return new Value(LLVMBuildStructGEP(builder, ptr.value(), idx,
                 Pointer.pointerToCString(name)));

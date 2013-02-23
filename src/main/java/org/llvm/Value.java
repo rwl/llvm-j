@@ -696,17 +696,32 @@ public class Value {
     }
 
     // TODO: fix Pointer (change to array)
-    public Value ConstGEP(Value constantVal,
+    public static Value constGEP(Value constantVal,
             Pointer<LLVMValueRef> constantIndices, int numIndices) {
         return new Value(LLVMConstGEP(constantVal.value(), constantIndices,
                 numIndices));
     }
 
-    // TODO: fix Pointer (change to array)
     public static Value constInBoundsGEP(Value constantVal,
             Pointer<LLVMValueRef> constantIndices, int numIndices) {
         return new Value(LLVMConstInBoundsGEP(constantVal.value(),
                 constantIndices, numIndices));
+    }
+
+    public static Value constInBoundsGEP(Value constantVal,
+            Value... constantIndices) {
+        int n = constantIndices.length;
+        LLVMValueRef[] inner = new LLVMValueRef[n];
+        for (int i = 0; i < n; i++) {
+            inner[i] = constantIndices[i].value;
+        }
+
+        Pointer<LLVMValueRef> array = Pointer.allocateTypedPointers(
+                LLVMValueRef.class, constantIndices.length);
+        array.setArray(inner);
+
+        return new Value(LLVMConstInBoundsGEP(constantVal.value(),
+                array, n));
     }
 
     public static Value constTrunc(Value constantVal, TypeRef toType) {
