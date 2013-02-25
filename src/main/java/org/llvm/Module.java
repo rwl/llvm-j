@@ -207,6 +207,11 @@ public class Module {
      *
      * @see llvm::Function::Create()
      */
+    public Value addFunction(String name, TypeRef functionTy) {
+        return new Value(LLVMAddFunction(module,
+                Pointer.pointerToCString(name), functionTy.type()));
+    }
+
     public Value addFunction(String name, LLVMTypeRef functionTy) {
         return new Value(LLVMAddFunction(module,
                 Pointer.pointerToCString(name), functionTy));

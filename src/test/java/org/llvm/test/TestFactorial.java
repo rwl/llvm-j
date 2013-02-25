@@ -25,7 +25,7 @@ public class TestFactorial extends TestCase {
         // LLVMInitializeNativeTarget();
         Module mod = Module.createWithName("fac_module");
         Value fac = mod.addFunction("fac", TypeRef.functionType(TypeRef
-                .int32Type(), TypeRef.int32Type()).type());
+                .int32Type(), TypeRef.int32Type()));
         fac.setFunctionCallConv(LLVMCallConv.LLVMCCallConv);
         Value n = fac.getParam(0);
 

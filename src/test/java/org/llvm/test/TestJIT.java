@@ -21,7 +21,7 @@ public class TestJIT extends TestCase {
         TypeRef ty_func = TypeRef.functionType(ty_i32, ty_i32, ty_i32);
 
         // Add a new function to the module, named "sum"
-        Value f_sum = mod.addFunction("sum", ty_func.type());
+        Value f_sum = mod.addFunction("sum", ty_func);
 
         // Name the function's params
         f_sum.getParam(0).setValueName("a");
