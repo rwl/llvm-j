@@ -1,5 +1,8 @@
 package org.llvm;
 
+import java.text.ParseException;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.bridj.IntValuedEnum;
 import org.bridj.Pointer;
 
@@ -57,13 +60,23 @@ public class Module {
     }
 
     /**
-     * Verifies that a module is valid, taking the specified action if not.<br>
-     * Optionally returns a human-readable description of any invalid constructs.<br>
-     * OutMessage must be disposed with LLVMDisposeMessage.
+     * Verifies that a module is valid, throwing an exception if not.
      */
-    public int verifyModule(IntValuedEnum<LLVMVerifierFailureAction> action,
-            Pointer<Pointer<Byte>> outMessage) {
-        return LLVMVerifyModule(module, action, outMessage);
+    public void verify()
+            throws LLVMException {
+        Pointer<Pointer<Byte>> ppByte = Pointer.pointerToCStrings("");
+        int retval = LLVMVerifyModule(module,
+                LLVMVerifierFailureAction.LLVMReturnStatusAction, ppByte);
+        if (retval != 0) {
+            Pointer<Byte> pByte = ppByte.getPointer(Byte.class);
+            final String message = pByte.getCString();
+            LLVMDisposeMessage(pByte);
+            throw new LLVMException(message);
+        }
+    }
+
+    public static void disposeMessage(AtomicReference<String> message) {
+
     }
 
     /**
@@ -137,6 +150,13 @@ public class Module {
      */
     public void dumpModule() {
         LLVMDumpModule(module);
+    }
+
+    /**
+     * Writes a module to the specified path. Returns 0 on success.
+     */
+    public int writeBitcodeToFile(String path) {
+        return LLVMWriteBitcodeToFile(module, Pointer.pointerToCString(path));
     }
 
     /**

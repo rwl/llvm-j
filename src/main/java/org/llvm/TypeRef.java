@@ -235,6 +235,12 @@ public class TypeRef {
                 internalize(paramTypes), paramTypes.length, 0));
     }
 
+    public static TypeRef functionType(TypeRef returnType, boolean isVarArg,
+            TypeRef... paramTypes) {
+        return new TypeRef(LLVMFunctionType(returnType.type,
+                internalize(paramTypes), paramTypes.length, isVarArg ? 1 : 0));
+    }
+
     /**
      * Returns whether a function type is variadic.
      */
@@ -307,7 +313,7 @@ public class TypeRef {
      */
     public static TypeRef structTypeNamed(String name) {
         return new TypeRef(LLVMStructCreateNamed(LLVMGetGlobalContext(),
-                Pointer.pointerToCString(name)));
+                Pointer.pointerToCString(name == null ? "" : name)));
     }
 
     /**
@@ -315,7 +321,7 @@ public class TypeRef {
      */
     public static TypeRef structTypeNamed(Context c, String name) {
         return new TypeRef(LLVMStructCreateNamed(c.context(),
-                Pointer.pointerToCString(name)));
+                Pointer.pointerToCString(name == null ? "" : name)));
     }
 
     /**
@@ -458,7 +464,7 @@ public class TypeRef {
     }
 
     public static TypeRef opaqueTypeInContext(Context c) {
-        return structTypeNamed(c, "");
+        return structTypeNamed(c, null);
     }
 
     /**
@@ -481,7 +487,7 @@ public class TypeRef {
     }
 
     public static TypeRef opaqueType() {
-        return structTypeNamed("");
+        return structTypeNamed(null);
     }
 
     public static TypeRef x86MMXType() {

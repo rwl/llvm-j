@@ -66,8 +66,17 @@ public class ExecutionEngine {
             LLVMModuleProviderRef mp, int optLevel,
             Pointer<Pointer<Byte>> outError);*/
 
-    public int CreateJITCompilerForModule(Module m, int optLevel, PrintStream outError) {
-        return 0;//FIXME LLVMCreateJITCompilerForModule(engine, m, optLevel, outError);
+    public void createJITCompilerForModule(Module m, int optLevel) throws LLVMException {
+        Pointer<Pointer<Byte>> ppByte = Pointer.pointerToCStrings("");
+        Pointer<LLVMExecutionEngineRef> pExec = Pointer.allocate(LLVMExecutionEngineRef.class);
+        pExec.set(engine);
+        int retval = LLVMCreateJITCompilerForModule(pExec, m.module(), optLevel, ppByte);
+        if (retval != 0) {
+            Pointer<Byte> pByte = ppByte.getPointer(Byte.class);
+            final String message = pByte.getCString();
+            LLVMDisposeMessage(pByte);
+            throw new LLVMException(message);
+        }
     }
 
     public void runStaticConstructors() {

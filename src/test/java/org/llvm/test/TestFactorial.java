@@ -7,6 +7,7 @@ import org.llvm.BasicBlock;
 import org.llvm.Builder;
 import org.llvm.ExecutionEngine;
 import org.llvm.GenericValue;
+import org.llvm.LLVMException;
 import org.llvm.Module;
 import org.llvm.PassManager;
 import org.llvm.TypeRef;
@@ -45,8 +46,7 @@ public class TestFactorial extends TestCase {
 
         builder.positionBuilderAtEnd(iffalse);
         Value n_minus = builder.buildSub(n, TypeRef.int32Type().constInt(1, false), "n - 1");
-        Value call_fac_args[] = { n_minus };
-        Value call_fac = builder.buildCall(fac, call_fac_args, "fac(n - 1)");
+        Value call_fac = builder.buildCall(fac, "fac(n - 1)", n_minus);
         Value res_iffalse = builder.buildMul(n, call_fac, "n * fac(n - 1)");
         builder.buildBr(end);
 
@@ -57,16 +57,13 @@ public class TestFactorial extends TestCase {
         res.addIncoming(phi_vals, phi_blocks, 2);
         builder.buildRet(res);
 
-        /*
-        mod.verifyModule(LLVMVerifierFailureAction.LLVMAbortProcessAction, &error);
-        LLVMDisposeMessage(error); // Handler == LLVMAbortProcessAction -> No need to check errors
-        */
-
         ExecutionEngine engine = ExecutionEngine.createForModule(mod);
-        /*if (engine.createJITCompilerForModule(mod, 2, error) != 0) {
-          LLVMDisposeMessage(error);
-          fail(error);
-        }*/
+        try {
+            mod.verify();
+            //engine.createJITCompilerForModule(mod, 2);  FIXME: requires LLVMInitializeNativeTarget() call
+        } catch (LLVMException e) {
+            fail(e.getMessage());
+        }
 
         PassManager pass = PassManager.create();
         engine.addTargetData(pass);

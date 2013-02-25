@@ -509,7 +509,7 @@ public class Builder {
                 Pointer.pointerToCString(name)));
     }
 
-    public Value buildCall(Value fn, Value[] args, String name) {
+    public Value buildCall(Value fn, String name, Value... args) {
         return new Value(LLVMBuildCall(builder, fn.value(), Value.internalize(args),
                 args.length, Pointer.pointerToCString(name)));
     }
